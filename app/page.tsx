@@ -35,6 +35,47 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+       <section className="mx-auto max-w-6xl px-6 pb-20">
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="rounded-3xl border border-gray-200 p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+              Java demos
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold">
+              Systems and backend engineering
+            </h2>
+            <p className="mt-4 text-gray-600 leading-7">
+              Stateful demos focused on data structures, concurrency, request
+              control, and backend execution patterns.
+            </p>
+            <Link
+              href="/demos/java"
+              className="mt-6 inline-block text-sm font-medium text-black underline underline-offset-4"
+            >
+              Browse Java demos
+            </Link>
+          </div>
+
+          <div className="rounded-3xl border border-gray-200 p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+              Node demos
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold">
+              Product APIs and OpenAPI workflows
+            </h2>
+            <p className="mt-4 text-gray-600 leading-7">
+              TypeScript backend demos focused on validation, contracts,
+              product-style REST APIs, and frontend integration.
+            </p>
+            <Link
+              href="/demos/node"
+              className="mt-6 inline-block text-sm font-medium text-black underline underline-offset-4"
+            >
+              Browse Node demos
+            </Link>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
