@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const javaDemos = [
   { name: "Expiring KV Store", href: "/demos/java/expiring-kv" },
@@ -15,12 +16,53 @@ const nodeDemos = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [hoveringBrand, setHoveringBrand] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setCollapsed(true);
+    }, 5000);
+
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const showWordmark = !collapsed || hoveringBrand;
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="text-lg font-semibold tracking-tight">
-          songjaehyun
+        <Link
+          href="/"
+          className="group"
+          onMouseEnter={() => setHoveringBrand(true)}
+          onMouseLeave={() => setHoveringBrand(false)}
+          aria-label="Go to homepage"
+        >
+          <div className="relative flex h-10 items-center overflow-hidden">
+            <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center">
+              <Image
+                src="/logos/musicnote.svg"
+                alt="Song Jaehyun logo"
+                width={28}
+                height={28}
+                className="h-7 w-7 object-contain"
+                priority
+              />
+            </div>
+
+            <span
+              className={[
+                "ml-2 inline-block whitespace-nowrap text-lg font-semibold tracking-tight text-black",
+                "transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]",
+                showWordmark
+                  ? "max-w-[220px] translate-x-0 opacity-100"
+                  : "max-w-0 -translate-x-3 opacity-0",
+              ].join(" ")}
+            >
+              songjaehyun
+            </span>
+          </div>
         </Link>
 
         <nav className="flex items-center gap-6 text-sm font-medium text-gray-700">
@@ -41,9 +83,7 @@ export default function Header() {
             onMouseEnter={() => setOpen(true)}
             onMouseLeave={() => setOpen(false)}
           >
-            <button className="transition hover:text-black">
-              Demos
-            </button>
+            <button className="transition hover:text-black">Demos</button>
 
             {open && (
               <div className="absolute right-0 top-full pt-2">
