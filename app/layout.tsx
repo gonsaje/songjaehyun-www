@@ -4,7 +4,7 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "Song Jaehyun",
+  title: "Jae Hyun Song",
   description: "Backend systems and API engineering demos",
 };
 

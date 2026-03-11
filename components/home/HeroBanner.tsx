@@ -5,7 +5,7 @@ export default function HomeBanner() {
     <section className="mx-auto max-w-6xl px-6 pt-20 pb-14">
       <div className="max-w-4xl">
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-gray-500">
-          Jaehyun Song
+          Jae Hyun Song
         </p>
 
         <h1 className="mt-4 text-5xl font-semibold leading-tight tracking-tight text-gray-950 sm:text-6xl">

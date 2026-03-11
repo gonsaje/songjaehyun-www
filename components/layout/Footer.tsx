@@ -83,7 +83,7 @@ export default function Footer() {
             <p className="text-xs text-gray-500 mt-1">
                 Java • Spring Boot • Node.js • React • AWS
             </p>
-          © {new Date().getFullYear()} Jaehyun Song.
+          © {new Date().getFullYear()} songjaehyun.
         </div>
 
       </div>

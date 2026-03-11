@@ -32,6 +32,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur shadow-[0_2px_6px_rgba(0,0,0,0.04),0_10px_24px_rgba(59,130,246,0.06)]">
+        
       <div className="relative mx-auto max-w-6xl px-6">
         <div
           className={[
