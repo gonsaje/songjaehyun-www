@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { API_BASE_URL } from "@/lib/config";
 
 type ProductCategory =
 	| "guitar"
@@ -41,9 +42,6 @@ type PaginatedProducts = {
 };
 
 const sortOptions: SortBy[] = ["name", "price", "rating"];
-
-const API_BASE_URL =
-	process.env.NEXT_PUBLIC_NODE_API_BASE_URL ?? "http://localhost:3001";
 
 const knownTerms = [
 	"guitar",
