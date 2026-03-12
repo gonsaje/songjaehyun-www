@@ -34,19 +34,50 @@ type PaginatedProducts = {
 };
 
 const API_BASE_URL = process.env.NODE_API_BASE_URL ?? "http://localhost:3001";
+const knownTerms = [
+  "guitar",
+  "piano",
+  "drums",
+  "microphone",
+  "audio-interface",
+  "accessory",
+  "studio",
+  "Fender",
+  "Gibson",
+  "Yamaha",
+  "Roland",
+  "Shure",
+  "Focusrite",
+  "Universal Audio",
+  "Audio-Technica",
+];
 
 export default function ProductCatalogPage() {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [searchValue, setSearchValue] = useState("");
+    const [search, setSearch] = useState("");
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
+    // const [suggestions, setSuggestions] = useState<string[]>([]);
 
     useEffect(() => {
         async function loadProducts() {
             try{
                 setLoading(true);
                 setError(null);
+
+                const searchParams = new URLSearchParams();
+
+                if (search.trim()) {
+                    searchParams.set("search", search.trim());
+                }
+
+                const url = `${API_BASE_URL}/api/products${
+                    searchParams.toString() ? `?${searchParams.toString()}` : ""
+                }`;
                 
-                const response = await fetch(`${API_BASE_URL}/api/products`, {cache: "no-store"});
+                const response = await fetch(url, {cache: "no-store"});
     
                 if (!response.ok) {
                     const body = await response.json().catch(() => null);
@@ -63,7 +94,24 @@ export default function ProductCatalogPage() {
         }
 
         loadProducts();
-    }, []);
+    }, [search]);
+
+    function getSuggestions(input: string) {
+        const query = input.trim().toLowerCase();
+
+        if (!query) return [];
+
+        return knownTerms
+            .filter((term) => term.toLowerCase().includes(query))
+            .slice(0, 5);
+    }
+
+    function handleSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        setSearch(searchValue.trim());
+    }
+
+    const suggestions = getSuggestions(searchValue);
 
     return (
         <main className="min-h-screen bg-white text-slate-900">
@@ -73,8 +121,62 @@ export default function ProductCatalogPage() {
                     Interactive Node.js Product API demo
                 </p>
             </section>
-                        <section className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+            <section className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+
                 <h2 className="text-3xl font-semibold tracking-tight">Products</h2>
+                <form
+                    onSubmit={(event) => {
+                        event.preventDefault();
+                        setSearch(searchValue.trim());
+                        setIsSearchFocused(false);
+                    }}
+                    className="mt-8 max-w-md"
+                >
+                    <label className="flex flex-col gap-2">
+                        <span className="text-sm font-medium text-slate-700">
+                            Search products
+                        </span>
+
+                        <div className="relative">
+                        <div className="flex gap-2">
+                            <input
+                                value={searchValue}
+                                onChange={(event) => setSearchValue(event.target.value)}
+                                onFocus={() => setIsSearchFocused(true)}
+                                onBlur={() => {
+                                    setTimeout(() => setIsSearchFocused(false), 150);
+                                }}
+                                placeholder="Search by name, category, or brand"
+                                className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
+                            />
+                            <button
+                                type="submit"
+                                className="rounded-2xl bg-slate-900 px-4 py-3 text-sm font-medium text-white"
+                            >
+                                Search
+                            </button>
+                        </div>
+                        {isSearchFocused && suggestions.length > 0 && (
+                            <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-20 max-h-64 overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-xl">
+                                {suggestions.map((suggestion) => (
+                                    <button
+                                        key={suggestion}
+                                        type="button"
+                                        onMouseDown={() => {
+                                            setSearchValue(suggestion);
+                                            setSearch(suggestion);
+                                            setIsSearchFocused(false);
+                                        }}
+                                        className="block w-full border-b border-slate-100 px-4 py-3 text-left text-sm text-slate-700 transition last:border-b-0 hover:bg-slate-50 hover:text-slate-950"
+                                    >
+                                        {suggestion}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                        </div>
+                    </label>
+                </form>
                 {loading ? (
                     <div className="mt-10 rounded-3xl border border-dashed border-slate-300 px-6 py-12 text-center text-slate-500">
                         Loading products...
