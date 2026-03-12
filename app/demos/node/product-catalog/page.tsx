@@ -223,6 +223,12 @@ export default function ProductCatalogPage() {
 							inventory mutation, and request-driven UI behavior against a
 							Node.js backend.
 						</p>
+						<a
+							href="#developer-notes"
+							className="mt-6 inline-flex items-center text-sm font-medium text-slate-900 transition hover:text-slate-600"
+						>
+							View developer notes ↓
+						</a>
 
 						<div className="mt-8 grid gap-4 sm:grid-cols-3">
 							<div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
@@ -634,6 +640,210 @@ export default function ProductCatalogPage() {
 								>
 									Next
 								</button>
+							</div>
+						</div>
+					</section>
+					<section
+						id="developer-notes"
+						className="xl:col-span-2 rounded-[2rem] border border-slate-200 bg-white p-10 shadow-sm"
+					>
+						<p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+							Developer Notes
+						</p>
+
+						<h2 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+							Product Search API Demo
+						</h2>
+
+						<p className="mt-4 max-w-3xl text-slate-600 leading-relaxed">
+							This page demonstrates a backend-driven product search system
+							designed to highlight API query design, filtering strategies,
+							fuzzy matching, and pagination mechanics. The UI acts as a thin
+							client that constructs query parameters and delegates most data
+							logic to the backend service.
+						</p>
+
+						<div className="mt-6 grid gap-4 sm:grid-cols-2">
+							<a
+								href="https://github.com/gonsaje/songjaehyun-www/blob/main/app/demos/node/product-catalog/page.tsx"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="rounded-3xl border border-slate-200 bg-slate-50 p-5 transition hover:border-slate-300 hover:bg-white"
+							>
+								<p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+									Frontend
+								</p>
+
+								<p className="mt-2 text-lg font-semibold text-slate-950">
+									UI Repository
+								</p>
+
+								<p className="mt-1 text-sm text-slate-600">
+									React + TypeScript + Tailwind
+								</p>
+							</a>
+
+							<a
+								href="https://github.com/gonsaje/songjaehyun-node-api/tree/main/src/modules/products"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="rounded-3xl border border-slate-200 bg-slate-50 p-5 transition hover:border-slate-300 hover:bg-white"
+							>
+								<p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+									Backend
+								</p>
+
+								<p className="mt-2 text-lg font-semibold text-slate-950">
+									API Repository
+								</p>
+
+								<p className="mt-1 text-sm text-slate-600">Node.js + Fastify</p>
+							</a>
+						</div>
+
+						<div className="mt-10 grid gap-10 md:grid-cols-2 xl:grid-cols-3">
+							{/* Architecture */}
+							<div>
+								<h3 className="text-lg font-semibold text-slate-950">
+									Architecture
+								</h3>
+
+								<ul className="mt-3 space-y-2 text-sm text-slate-600 leading-relaxed">
+									<li>
+										React + TypeScript frontend responsible for query
+										construction and UI state management.
+									</li>
+
+									<li>
+										Node.js API service handles filtering, sorting, pagination,
+										and fuzzy matching logic.
+									</li>
+
+									<li>
+										Stateless request model where all query state is encoded in
+										URL query parameters.
+									</li>
+
+									<li>
+										The UI re-fetches data whenever query parameters change,
+										allowing the backend to remain the source of truth.
+									</li>
+								</ul>
+							</div>
+
+							{/* Functionalities */}
+							<div>
+								<h3 className="text-lg font-semibold text-slate-950">
+									Core Functionality
+								</h3>
+
+								<ul className="mt-3 space-y-2 text-sm text-slate-600 leading-relaxed">
+									<li>Search products by name, brand, or category.</li>
+
+									<li>
+										Dynamic filtering using category, brand, and condition
+										selectors.
+									</li>
+
+									<li>
+										Sorting by multiple attributes (name, price, rating,
+										inventory).
+									</li>
+
+									<li>Ascending or descending ordering.</li>
+
+									<li>Server-side pagination with configurable page size.</li>
+
+									<li>
+										Search suggestions generated from known product terms.
+									</li>
+								</ul>
+							</div>
+
+							{/* Algorithms */}
+							<div>
+								<h3 className="text-lg font-semibold text-slate-950">
+									Algorithms
+								</h3>
+
+								<ul className="mt-3 space-y-2 text-sm text-slate-600 leading-relaxed">
+									<li>
+										Fuzzy search implemented using the{" "}
+										<span className="font-medium text-slate-900">
+											Levenshtein distance
+										</span>{" "}
+										algorithm.
+									</li>
+
+									<li>
+										This allows approximate matching when user input contains
+										typos or partial strings.
+									</li>
+
+									<li>
+										Example: searching for <code>fendr</code> still matches{" "}
+										<code>Fender</code>.
+									</li>
+
+									<li>
+										Candidate results are scored by edit distance and filtered
+										using a similarity threshold.
+									</li>
+								</ul>
+							</div>
+
+							{/* Improvements */}
+							<div>
+								<h3 className="text-lg font-semibold text-slate-950">
+									Areas for Improvement
+								</h3>
+
+								<ul className="mt-3 space-y-2 text-sm text-slate-600 leading-relaxed">
+									<li>
+										Filter metadata is currently generated from the current page
+										results. A production system would return filter dimensions
+										from the backend.
+									</li>
+
+									<li>
+										Search ranking could incorporate weighted scoring across
+										multiple fields.
+									</li>
+
+									<li>
+										Fuzzy matching could be optimized using a precomputed index
+										or trigram-based search.
+									</li>
+
+									<li>
+										Query caching could reduce redundant API calls when
+										navigating between pages.
+									</li>
+								</ul>
+							</div>
+
+							{/* System Design */}
+							<div>
+								<h3 className="text-lg font-semibold text-slate-950">
+									System Design Notes
+								</h3>
+
+								<ul className="mt-3 space-y-2 text-sm text-slate-600 leading-relaxed">
+									<li>
+										Query parameters represent the full state of the request,
+										enabling shareable URLs.
+									</li>
+
+									<li>
+										The frontend uses memoized query parameter construction to
+										avoid unnecessary renders.
+									</li>
+
+									<li>
+										Pagination metadata returned from the API controls
+										navigation state in the UI.
+									</li>
+								</ul>
 							</div>
 						</div>
 					</section>
