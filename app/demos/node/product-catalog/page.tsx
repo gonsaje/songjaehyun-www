@@ -33,6 +33,11 @@ type PaginatedProducts = {
 	pageSize: number;
 	total: number;
 	totalPages: number;
+	filters: {
+		brands: string[];
+		categories: ProductCategory[];
+		conditions: ProductCondition[];
+	};
 };
 
 const sortOptions: SortBy[] = ["name", "price", "rating"];
@@ -73,6 +78,10 @@ export default function ProductCatalogPage() {
 	const [sortBy, setSortBy] = useState<SortBy>("name");
 	const [order, setOrder] = useState<SortOrder>("asc");
 
+	const [selectedCategory, setSelectedCategory] = useState<string>("");
+	const [selectedCondition, setSelectedCondition] = useState<string>("");
+	const [selectedBrand, setSelectedBrand] = useState<string>("");
+
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
 
@@ -83,21 +92,41 @@ export default function ProductCatalogPage() {
 			searchParams.set("search", search.trim());
 		}
 
+		if (selectedCategory) {
+			searchParams.set("category", selectedCategory);
+		}
+
+		if (selectedCondition) {
+			searchParams.set("condition", selectedCondition);
+		}
+
+		if (selectedBrand) {
+			searchParams.set("brand", selectedBrand);
+		}
+
 		searchParams.set("sortBy", sortBy);
 		searchParams.set("order", order);
 		searchParams.set("page", String(page));
 		searchParams.set("pageSize", String(pageSize));
 
-        return searchParams.toString();
-	}, [search, sortBy, order, page, pageSize]);
-
+		return searchParams.toString();
+	}, [
+		search,
+		selectedCategory,
+		selectedCondition,
+		selectedBrand,
+		sortBy,
+		order,
+		page,
+		pageSize,
+	]);
 
 	async function loadProducts() {
 		try {
 			setLoading(true);
 			setError(null);
 
-            const url = `${API_BASE_URL}/api/products${queryParams ? `?${queryParams}` : "" }`;
+			const url = `${API_BASE_URL}/api/products${queryParams ? `?${queryParams}` : ""}`;
 
 			const response = await fetch(url, { cache: "no-store" });
 
@@ -139,6 +168,39 @@ export default function ProductCatalogPage() {
 		setSearch(searchValue.trim());
 		setPage(1);
 		setIsSearchFocused(false);
+	}
+
+	function handleResetFilters() {
+		setSearchValue("");
+		setSearch("");
+		setSelectedCategory("");
+		setSelectedCondition("");
+		setSelectedBrand("");
+		setSortBy("name");
+		setOrder("asc");
+		setPage(1);
+		setIsSearchFocused(false);
+	}
+
+	const categoryOptions = useMemo(() => {
+		return [...new Set(products.map((product) => product.category))].sort();
+	}, [products]);
+
+	const conditionOptions = useMemo(() => {
+		return [...new Set(products.map((product) => product.condition))].sort();
+	}, [products]);
+
+	const brandOptions = useMemo(() => {
+		return [...new Set(products.map((product) => product.brand))].sort();
+	}, [products]);
+
+	function getPillClass(isActive: boolean) {
+		return [
+			"rounded-full border px-3 py-2 text-sm font-medium transition",
+			isActive
+				? "border-slate-900 bg-slate-900 text-white"
+				: "border-slate-300 bg-white text-slate-700 hover:border-slate-400 hover:text-slate-950",
+		].join(" ");
 	}
 
 	const suggestions = getSuggestions(searchValue);
@@ -221,9 +283,28 @@ export default function ProductCatalogPage() {
 						</div>
 					</aside>
 				</div>
-
+				{/* Search and Filter Section */}
 				<div className="mt-8 grid gap-8 xl:grid-cols-[40%_60%]">
 					<section className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+						<div className="flex items-center justify-between gap-4">
+							<div>
+								<p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+									Query Controls
+								</p>
+								<h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
+									Filter and fetch products
+								</h2>
+							</div>
+
+							<button
+								type="button"
+								onClick={handleResetFilters}
+								className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
+							>
+								Reset all
+							</button>
+						</div>
+
 						<form onSubmit={handleSearchSubmit} className="mt-8">
 							<label className="flex flex-col gap-2">
 								<span className="text-sm font-medium text-slate-700">
@@ -327,8 +408,100 @@ export default function ProductCatalogPage() {
 								</select>
 							</label>
 						</div>
-					</section>
 
+						<div className="mt-8 space-y-6">
+							<div>
+								<p className="text-sm font-medium text-slate-700">Category</p>
+								<div className="mt-3 flex flex-wrap gap-2">
+									<button
+										type="button"
+										onClick={() => {
+											setSelectedCategory("");
+											setPage(1);
+										}}
+										className={getPillClass(selectedCategory === "")}
+									>
+										All
+									</button>
+
+									{categoryOptions.map((category) => (
+										<button
+											key={category}
+											type="button"
+											onClick={() => {
+												setSelectedCategory(category);
+												setPage(1);
+											}}
+											className={getPillClass(selectedCategory === category)}
+										>
+											{category}
+										</button>
+									))}
+								</div>
+							</div>
+
+							<div>
+								<p className="text-sm font-medium text-slate-700">Condition</p>
+								<div className="mt-3 flex flex-wrap gap-2">
+									<button
+										type="button"
+										onClick={() => {
+											setSelectedCondition("");
+											setPage(1);
+										}}
+										className={getPillClass(selectedCondition === "")}
+									>
+										All
+									</button>
+
+									{conditionOptions.map((condition) => (
+										<button
+											key={condition}
+											type="button"
+											onClick={() => {
+												setSelectedCondition(condition);
+												setPage(1);
+											}}
+											className={getPillClass(selectedCondition === condition)}
+										>
+											{condition}
+										</button>
+									))}
+								</div>
+							</div>
+
+							<div>
+								<p className="text-sm font-medium text-slate-700">Brand</p>
+								<div className="mt-3 flex flex-wrap gap-2">
+									<button
+										type="button"
+										onClick={() => {
+											setSelectedBrand("");
+											setPage(1);
+										}}
+										className={getPillClass(selectedBrand === "")}
+									>
+										All
+									</button>
+
+									{brandOptions.map((brand) => (
+										<button
+											key={brand}
+											type="button"
+											onClick={() => {
+												setSelectedBrand(brand);
+												setPage(1);
+											}}
+											className={getPillClass(selectedBrand === brand)}
+										>
+											{brand}
+										</button>
+									))}
+								</div>
+							</div>
+						</div>
+					</section>
+					{/* Product Inventory Section */}
 					<section className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
 						<div className="flex flex-wrap items-center justify-between gap-4">
 							<h2 className="text-3xl font-semibold tracking-tight">
