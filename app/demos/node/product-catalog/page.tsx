@@ -37,7 +37,8 @@ type SortBy = "name" | "price" | "rating";
 type SortOrder = "asc" | "desc";
 const sortOptions: SortBy[] = ["name", "price", "rating"];
 
-const API_BASE_URL = process.env.NODE_API_BASE_URL ?? "http://localhost:3001";
+const API_BASE_URL =
+	process.env.NEXT_PUBLIC_NODE_API_BASE_URL ?? "http://localhost:3001";
 const knownTerms = [
 	"guitar",
 	"piano",
@@ -58,51 +59,62 @@ const knownTerms = [
 
 export default function ProductCatalogPage() {
 	const [products, setProducts] = useState<Product[]>([]);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
+	const [page, setPage] = useState(1);
+	const [pageSize, setPageSize] = useState(4);
+	const [total, setTotal] = useState(0);
+	const [totalPages, setTotalPages] = useState(1);
+
 	const [searchValue, setSearchValue] = useState("");
 	const [search, setSearch] = useState("");
 	const [isSearchFocused, setIsSearchFocused] = useState(false);
 	const [sortBy, setSortBy] = useState<SortBy>("name");
 	const [order, setOrder] = useState<SortOrder>("asc");
-	// const [suggestions, setSuggestions] = useState<string[]>([]);
+
+	const [error, setError] = useState<string | null>(null);
+	const [loading, setLoading] = useState(false);
+
+	async function loadProducts() {
+		try {
+			setLoading(true);
+			setError(null);
+
+			const searchParams = new URLSearchParams();
+
+			if (search.trim()) {
+				searchParams.set("search", search.trim());
+			}
+			searchParams.set("sortBy", sortBy);
+			searchParams.set("order", order);
+			searchParams.set("page", String(page));
+			searchParams.set("pageSize", String(pageSize));
+
+			const url = `${API_BASE_URL}/api/products${
+				searchParams.toString() ? `?${searchParams.toString()}` : ""
+			}`;
+
+			const response = await fetch(url, { cache: "no-store" });
+
+			if (!response.ok) {
+				const body = await response.json().catch(() => null);
+				throw new Error(body?.error?.message ?? "Failed to load products.");
+			}
+
+			const data: PaginatedProducts = await response.json();
+			setProducts(data.items);
+			setPage(data.page);
+			setPageSize(data.pageSize);
+			setTotal(data.total);
+			setTotalPages(data.totalPages);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Something went wrong.");
+		} finally {
+			setLoading(false);
+		}
+	}
 
 	useEffect(() => {
-		async function loadProducts() {
-			try {
-				setLoading(true);
-				setError(null);
-
-				const searchParams = new URLSearchParams();
-
-				if (search.trim()) {
-					searchParams.set("search", search.trim());
-				}
-                searchParams.set("sortBy", sortBy);
-                searchParams.set("order", order);
-
-				const url = `${API_BASE_URL}/api/products${
-					searchParams.toString() ? `?${searchParams.toString()}` : ""
-				}`;
-
-				const response = await fetch(url, { cache: "no-store" });
-
-				if (!response.ok) {
-					const body = await response.json().catch(() => null);
-					throw new Error(body?.error?.message ?? "Failed to load products.");
-				}
-
-				const data: PaginatedProducts = await response.json();
-				setProducts(data.items);
-			} catch (err) {
-				setError(err instanceof Error ? err.message : "Something went wrong.");
-			} finally {
-				setLoading(false);
-			}
-		}
-
 		loadProducts();
-	}, [search, sortBy, order]);
+	}, [search, sortBy, order, page, pageSize]);
 
 	function getSuggestions(input: string) {
 		const query = input.trim().toLowerCase();
@@ -236,7 +248,24 @@ export default function ProductCatalogPage() {
 
 				<section className="border border-slate-200 bg-white p-8 shadow-sm">
 					<h2 className="text-3xl font-semibold tracking-tight">Products</h2>
-
+					<div className="flex items-center gap-3 text-sm text-slate-600">
+						<span>{total} total</span>
+						<label className="flex items-center gap-2">
+							<span>Page size</span>
+							<select
+								value={pageSize}
+								onChange={(event) => {
+									setPageSize(Number(event.target.value));
+									setPage(1);
+								}}
+								className="rounded-full border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none"
+							>
+								<option value={4}>4</option>
+								<option value={8}>8</option>
+								<option value={12}>12</option>
+							</select>
+						</label>
+					</div>
 					{loading ? (
 						<div className="mt-10 rounded-3xl border border-dashed border-slate-300 px-6 py-12 text-center text-slate-500">
 							Loading products...
@@ -316,6 +345,31 @@ export default function ProductCatalogPage() {
 							))}
 						</div>
 					)}
+					<div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 pt-6">
+						<p className="text-sm text-slate-600">
+							Page {page} of {totalPages}
+						</p>
+						<div className="flex items-center gap-3">
+							<button
+								type="button"
+								disabled={page <= 1 || loading}
+								onClick={() => setPage((current) => Math.max(1, current - 1))}
+								className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition enabled:hover:border-slate-400 enabled:hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-40"
+							>
+								Previous
+							</button>
+							<button
+								type="button"
+								disabled={page >= totalPages || loading}
+								onClick={() =>
+									setPage((current) => Math.min(totalPages, current + 1))
+								}
+								className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition enabled:hover:border-slate-400 enabled:hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-40"
+							>
+								Next
+							</button>
+						</div>
+					</div>
 				</section>
 			</div>
 		</main>
