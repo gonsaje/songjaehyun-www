@@ -7,29 +7,18 @@ const demos = [
     description:
       "A session-isolated store with TTL-based expiration, snapshot export, and method-call logging.",
     href: "/demos/java/expiring-kv",
-  },
-  {
-    eyebrow: "Planned demo",
-    title: "LRU Cache",
-    description:
-      "A visual backend demo focused on eviction policy, access patterns, and cache behavior.",
-    href: "/demos/java",
-  },
-  {
-    eyebrow: "Planned demo",
-    title: "Sliding Window Rate Limiter",
-    description:
-      "An interactive demo showing request admission, time windows, and rate limiting behavior.",
-    href: "/demos/java",
+    live: true
   },
   {
     eyebrow: "Node demo",
     title: "Product API Demo",
     description:
       "A TypeScript API focused on validation, contracts, product-style routes, and frontend integration.",
-    href: "/demos/node",
+    href: "/demos/node/product-catalog",
+    live: true,
   },
 ];
+
 
 export default function FeaturedDemos() {
   return (
@@ -57,12 +46,14 @@ export default function FeaturedDemos() {
               {demo.title}
             </h3>
             <p className="mt-4 text-gray-600 leading-7">{demo.description}</p>
+            {demo.live &&
+
             <Link
               href={demo.href}
               className="mt-6 inline-block text-sm font-medium text-black underline underline-offset-4"
             >
               View demo
-            </Link>
+            </Link>}
           </div>
         ))}
       </div>
