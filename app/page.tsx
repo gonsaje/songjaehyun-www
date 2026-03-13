@@ -14,7 +14,9 @@ export default function HomePage() {
       <FeaturedDemos />
       <ArchitecturePreview />
       <AboutPreview />
+      <div className="mx-auto max-w-6xl px-6 py-16"> 
       <Contact />
+      </div>
     </main>
   );
 }

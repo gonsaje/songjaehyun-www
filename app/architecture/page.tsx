@@ -1,4 +1,5 @@
-import ArchitectureDiagram from "../../components/architecture/ArchitectureDiagram";
+import Contact from "@/components/layout/Contact";
+
 export default function ArchitecturePage() {
   return (
     <main className="mx-auto max-w-6xl px-6 py-16">
@@ -8,16 +9,16 @@ export default function ArchitecturePage() {
         </p>
 
         <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
-          One frontend. <br/>
-          Two backend tracks.
+          One platform. <br />
+          Distinct backend responsibilities.
         </h1>
 
         <p className="mt-6 max-w-3xl text-lg leading-8 text-gray-600">
-          This platform is designed as a single React and TypeScript frontend
-          that presents demos powered by two backend services. Java is used for
-          systems-oriented demos that involve stateful execution and backend
-          behavior. Node.js is used for product-style API demos focused on
-          validation, contracts, and OpenAPI workflows.
+          songjaehyun.com is built as a single frontend experience backed by two
+          separate API tracks. The frontend stays consistent, while each backend
+          is designed around a different kind of engineering problem: Java for
+          stateful systems and algorithm execution, and Node.js for product-style
+          APIs, validation, and contract-driven workflows.
         </p>
       </section>
 
@@ -28,30 +29,34 @@ export default function ArchitecturePage() {
           </p>
 
           <h2 className="mt-3 text-2xl font-semibold">
-            React + TypeScript
+            React + TypeScript interface
           </h2>
 
           <p className="mt-4 leading-7 text-gray-600">
-            The frontend acts as the single entry point for the portfolio. It provides
-            navigation, demo pages, interactive controls, technical writeups, and a
-            unified experience across both backend tracks.
+            The frontend is the unified surface of the platform. It handles
+            navigation, demo views, controls, technical explanations, and data
+            visualization while routing requests to the appropriate backend
+            service behind the scenes.
           </p>
         </div>
+
         <div className="rounded-3xl border border-gray-200 p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
             Java backend
           </p>
 
           <h2 className="mt-3 text-2xl font-semibold">
-            Systems demo service
+            Systems demo engine
           </h2>
 
           <p className="mt-4 leading-7 text-gray-600">
-            The Java service powers demos focused on execution flow, in-memory state,
-            algorithms, and backend engineering concepts like rate limiting and TTL
-            storage.
+            The Java service runs real backend logic for interactive systems
+            demos. It is built for stateful execution, per-session isolation,
+            in-memory behavior, and educational transparency through structured
+            method logging.
           </p>
         </div>
+
         <div className="rounded-3xl border border-gray-200 p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
             Node backend
@@ -62,66 +67,81 @@ export default function ArchitecturePage() {
           </h2>
 
           <p className="mt-4 leading-7 text-gray-600">
-            The Node.js service powers product-style demos focused on API contracts,
-            validation, request/response schemas, and OpenAPI-first design patterns.
+            The Node.js service supports demos centered on API design. It focuses
+            on request validation, response contracts, filtering, pagination, and
+            OpenAPI-style patterns that reflect practical product engineering.
           </p>
         </div>
-
       </section>
+
       <section className="mt-16">
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-gray-500">
           Visual overview
         </p>
 
         <h2 className="mt-4 text-3xl font-semibold tracking-tight">
-          Platform architecture at a glance
+          How the platform is organized
         </h2>
 
-        <p className="mt-6 max-w-3xl text-lg leading-8 text-gray-600">
-          The frontend provides a unified experience while routing demo interactions
-          to separate backend services based on the type of system being showcased.
-        </p>
+  <p className="mt-6 max-w-3xl text-lg leading-8 text-gray-600">
+    The platform is built as a unified frontend that communicates with two
+    independent backend services. Each service focuses on a different category
+    of engineering problems while remaining accessible through a single user
+    interface.
+  </p>
 
-        <div className="mt-10">
-          <ArchitectureDiagram />
-        </div>
+  <div className="mt-10 flex justify-center">
+    <div className="max-w-4xl rounded-3xl border border-gray-200 bg-white p-6">
+      <img
+        src="/songjaehyunArchitecture.svg"
+        alt="songjaehyun.com platform architecture diagram"
+        className="w-full h-auto"
+      />
+    </div>
+  </div>
+
+  <p className="mt-4 text-center text-sm text-gray-500">
+    The React frontend routes demo interactions to two backend services deployed
+    independently on AWS.
+  </p>
+
       </section>
 
       <section className="mt-16 rounded-3xl border border-gray-200 p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-          Platform flow
+          Request lifecycle
         </p>
 
         <div className="mt-6 grid gap-6 md:grid-cols-4">
           <div className="rounded-2xl bg-gray-50 p-5">
-            <p className="text-sm font-semibold text-gray-900">1. User interface</p>
+            <p className="text-sm font-semibold text-gray-900">1. Explore</p>
             <p className="mt-3 text-sm leading-6 text-gray-600">
-              A visitor navigates the site, selects a demo, and interacts with
-              controls from the frontend.
+              A visitor opens a demo, reads the context, and interacts with the
+              UI through forms, controls, or preset scenarios.
             </p>
           </div>
 
           <div className="rounded-2xl bg-gray-50 p-5">
-            <p className="text-sm font-semibold text-gray-900">2. Frontend request</p>
+            <p className="text-sm font-semibold text-gray-900">2. Route</p>
             <p className="mt-3 text-sm leading-6 text-gray-600">
-              The React frontend sends requests to the correct backend service
-              depending on the selected demo.
+              The frontend sends the request to the correct backend based on the
+              type of demo being exercised.
             </p>
           </div>
 
           <div className="rounded-2xl bg-gray-50 p-5">
-            <p className="text-sm font-semibold text-gray-900">3. Backend execution</p>
+            <p className="text-sm font-semibold text-gray-900">3. Execute</p>
             <p className="mt-3 text-sm leading-6 text-gray-600">
-              The backend processes the request, applies business or demo logic,
-              and returns structured data to the frontend.
+              The backend runs the demo logic, applies validation or state
+              changes, and returns structured output for the UI.
             </p>
           </div>
 
           <div className="rounded-2xl bg-gray-50 p-5">
-            <p className="text-sm font-semibold text-gray-900">4. Demo output</p>
+            <p className="text-sm font-semibold text-gray-900">4. Explain</p>
             <p className="mt-3 text-sm leading-6 text-gray-600">
-              The frontend renders the result as state views, API responses,
-              timelines, or technical explanations.
+              The frontend renders the result as data, logs, state snapshots, or
+              technical commentary so the system behavior is visible.
             </p>
           </div>
         </div>
@@ -130,146 +150,149 @@ export default function ArchitecturePage() {
       <section className="mt-16 grid gap-6 md:grid-cols-2">
         <div className="rounded-3xl border border-gray-200 p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-            Service boundaries
+            Separation of concerns
           </p>
           <p className="mt-4 leading-7 text-gray-600">
-            Each backend is intentionally separated by responsibility. The frontend
-            remains consistent, but the implementation details of each backend are
-            allowed to reflect the strengths of that stack instead of forcing one
-            language to solve every problem.
+            Each service is scoped intentionally. The frontend provides one
+            coherent product surface, while the backends stay specialized. That
+            separation keeps the platform easier to reason about, extend, and
+            deploy without blending unrelated responsibilities together.
           </p>
         </div>
 
         <div className="rounded-3xl border border-gray-200 p-8">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-            Deployment shape
+            Why two backend tracks
           </p>
           <p className="mt-4 leading-7 text-gray-600">
-            The frontend can be deployed independently from the APIs, while the
-            Java and Node services are hosted separately behind their own domains
-            or subdomains. This keeps the platform modular and makes each service
-            easier to evolve on its own.
+            Not every backend problem wants the same tools. Java is a better fit
+            for demos centered on state, execution flow, and systems behavior.
+            Node.js is a natural fit for product-facing APIs, schema validation,
+            and fast iteration around contracts and endpoints.
           </p>
         </div>
       </section>
 
       <section className="mt-16 rounded-3xl border border-gray-200 p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-          Planned structure
+          Project structure
         </p>
 
         <div className="mt-6 overflow-x-auto rounded-2xl bg-gray-950 p-6 text-sm text-gray-100">
           <pre className="whitespace-pre-wrap leading-7">
 {`songjaehyun.com
 │
-├─ Frontend (React + TypeScript + Next.js)
+├─ Frontend (Next.js + React + TypeScript)
 │  ├─ Home
 │  ├─ About
 │  ├─ Architecture
 │  └─ Demos
-│     ├─ Java
-│     │  ├─ Expiring KV Store
+│     ├─ Java demos
+│     │  ├─ Expiring Key Value Store
 │     │  └─ Rate Limiter
-│     └─ Node
+│     └─ Node demos
 │        ├─ Product Catalog API
 │        └─ OpenAPI Playground
 │
 ├─ api.songjaehyun.com
-│  └─ Java backend for systems demos
+│  └─ Java backend for systems-oriented demos
 │
 └─ node-api.songjaehyun.com
-   └─ Node.js backend for product-style API demos`}
+   └─ Node backend for product-style API demos`}
           </pre>
         </div>
       </section>
-      <section className="mt-16">
-        <p className="text-sm font-medium uppercase tracking-[0.2em] text-gray-500">
-          Infrastructure
-        </p>
 
-        <h2 className="mt-4 text-3xl font-semibold tracking-tight">
-          AWS deployment architecture
-        </h2>
+   <section className="mt-16">
+  <p className="text-sm font-medium uppercase tracking-[0.2em] text-gray-500">
+    Infrastructure
+  </p>
 
-        <p className="mt-6 max-w-3xl text-lg leading-8 text-gray-600">
-          The platform is deployed using AWS services that separate the frontend,
-          backend APIs, and networking layers. This allows each component of the
-          system to scale and evolve independently while maintaining a clean service
-          boundary between frontend and backend workloads.
-        </p>
+  <h2 className="mt-4 text-3xl font-semibold tracking-tight">
+    AWS deployment architecture
+  </h2>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+  <p className="mt-6 max-w-3xl text-lg leading-8 text-gray-600">
+    The platform is deployed using AWS infrastructure that separates the
+    frontend from the backend services while keeping the system simple and
+    modular. Each API runs in its own containerized service while the frontend
+    is delivered globally through a CDN.
+  </p>
 
-          <div className="rounded-3xl border border-gray-200 p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-              Static frontend
-            </p>
+  <div className="mt-12 grid gap-6 md:grid-cols-3">
 
-            <h3 className="mt-3 text-xl font-semibold">
-              S3 + CloudFront
-            </h3>
+    <div className="rounded-3xl border border-gray-200 p-8">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+        Frontend delivery
+      </p>
 
-            <p className="mt-4 leading-7 text-gray-600">
-              The React frontend is deployed as a static site hosted in Amazon S3 and
-              distributed globally through CloudFront. This provides low latency,
-              CDN caching, and a clean separation between UI and backend services.
-            </p>
-          </div>
+      <h3 className="mt-3 text-xl font-semibold">
+        S3 + CloudFront
+      </h3>
 
-          <div className="rounded-3xl border border-gray-200 p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-              Java service
-            </p>
+      <p className="mt-4 leading-7 text-gray-600">
+        The React frontend is built as a static site and hosted in Amazon S3.
+        CloudFront distributes the site globally through a CDN, providing low
+        latency and clean separation between the user interface and backend
+        services.
+      </p>
+    </div>
 
-            <h3 className="mt-3 text-xl font-semibold">
-              ECS + Fargate
-            </h3>
+    <div className="rounded-3xl border border-gray-200 p-8">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+        Java service
+      </p>
 
-            <p className="mt-4 leading-7 text-gray-600">
-              The Java backend runs inside Docker containers deployed on Amazon ECS
-              using Fargate. This allows the demo services to run without managing
-              servers while supporting scalable backend execution.
-            </p>
-          </div>
+      <h3 className="mt-3 text-xl font-semibold">
+        ECS + Fargate
+      </h3>
 
-          <div className="rounded-3xl border border-gray-200 p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-              Node API
-            </p>
+      <p className="mt-4 leading-7 text-gray-600">
+        The Java backend runs in Docker containers deployed on Amazon ECS using
+        Fargate. This service powers the systems-oriented demos that require
+        stateful execution and backend processing.
+      </p>
+    </div>
 
-            <h3 className="mt-3 text-xl font-semibold">
-              App Runner
-            </h3>
+    <div className="rounded-3xl border border-gray-200 p-8">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+        Node API
+      </p>
 
-            <p className="mt-4 leading-7 text-gray-600">
-              The Node.js backend is deployed as a separate service using AWS App
-              Runner. This simplifies container deployment and automatically manages
-              scaling, networking, and HTTPS for API endpoints.
-            </p>
-          </div>
+      <h3 className="mt-3 text-xl font-semibold">
+        ECS + Fargate
+      </h3>
 
-        </div>
+      <p className="mt-4 leading-7 text-gray-600">
+        The Node.js API runs as a separate containerized service on ECS
+        Fargate. It powers the product-style API demos focused on validation,
+        request handling, and OpenAPI-driven workflows.
+      </p>
+    </div>
 
-        <div className="mt-12 rounded-3xl border border-gray-200 p-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-            Networking layer
-          </p>
+  </div>
 
-          <p className="mt-4 text-lg leading-8 text-gray-600">
-            Each backend service is exposed through its own subdomain. This allows
-            the frontend to communicate with both services independently while
-            keeping the architecture modular.
-          </p>
+  <div className="mt-12 rounded-3xl border border-gray-200 p-8">
+    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+      Networking
+    </p>
 
-          <div className="mt-6 overflow-x-auto rounded-2xl bg-gray-950 p-6 text-sm text-gray-100">
-            <pre className="whitespace-pre-wrap leading-7">
-        {`          songjaehyun.com             → React frontend
-          api.songjaehyun.com         → Java backend (ECS / Fargate)
-          node-api.songjaehyun.com    → Node.js backend (App Runner)`}
-            </pre>
-          </div>
-        </div>
-      </section>
+    <p className="mt-4 text-lg leading-8 text-gray-600">
+      Both backend services run behind an AWS Application Load Balancer and are
+      exposed through separate subdomains. This keeps the services isolated
+      while allowing the frontend to route requests to the appropriate API.
+    </p>
+
+    <div className="mt-6 overflow-x-auto rounded-2xl bg-gray-950 p-6 text-sm text-gray-100">
+      <pre className="whitespace-pre-wrap leading-7">
+{`songjaehyun.com          → React frontend (S3 + CloudFront)
+api.songjaehyun.com      → Java backend (ECS / Fargate)
+node-api.songjaehyun.com → Node API backend (ECS / Fargate)`}
+      </pre>
+    </div>
+  </div>
+</section>
+<Contact/>
     </main>
   );
 }

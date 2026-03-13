@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Contact from "@/components/layout/Contact";
 
 export default function DemosPage() {
   return (
@@ -49,6 +50,7 @@ export default function DemosPage() {
           </p>
         </Link>
       </div>
+      <Contact/>
     </main>
   );
 }
