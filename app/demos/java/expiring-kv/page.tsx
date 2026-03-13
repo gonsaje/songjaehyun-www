@@ -568,7 +568,7 @@ export default function Page() {
 
 						<div className="mt-6 flex flex-wrap gap-3">
 							<a
-								href="https://github.com/yourname/songjaehyun-ui"
+								href="https://github.com/gonsaje/songjaehyun-www/blob/main/app/demos/java/expiring-kv/page.tsx"
 								target="_blank"
 								rel="noopener noreferrer"
 								className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.12em] text-slate-700 transition hover:border-slate-300 hover:bg-slate-100"
@@ -577,7 +577,7 @@ export default function Page() {
 							</a>
 
 							<a
-								href="https://github.com/yourname/songjaehyun-api"
+								href="https://github.com/gonsaje/songjaehyun-api/tree/main/src/main/java/com/songjaehyun/api/demos/expiringkv"
 								target="_blank"
 								rel="noopener noreferrer"
 								className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.12em] text-slate-700 transition hover:border-slate-300 hover:bg-slate-100"
