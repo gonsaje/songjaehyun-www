@@ -24,6 +24,17 @@ export const demos: Demo[] = [
     href: "/demos/java/expiring-kv",
   },
   {
+    slug: "product-catalog",
+    title: "Product Catalog API",
+    category: "node",
+    summary:
+      "A product-style REST API with validation, typed contracts, and clean endpoint design.",
+    backend: "Node.js / TypeScript",
+    tags: ["Node", "TypeScript", "REST"],
+    status: "live",
+    href: "/demos/node/product-catalog",
+  },
+  {
     slug: "rate-limiter",
     title: "Rate Limiter",
     category: "java",
@@ -32,18 +43,7 @@ export const demos: Demo[] = [
     backend: "Java / Spring Boot",
     tags: ["Java", "Systems", "Concurrency"],
     status: "planned",
-    href: "/demos/java/rate-limiter",
-  },
-  {
-    slug: "product-catalog",
-    title: "Product Catalog API",
-    category: "node",
-    summary:
-      "A product-style REST API with validation, typed contracts, and clean endpoint design.",
-    backend: "Node.js / TypeScript",
-    tags: ["Node", "TypeScript", "REST"],
-    status: "planned",
-    href: "/demos/node/product-catalog",
+    href: "/demos/java",
   },
   {
     slug: "openapi-playground",
@@ -54,6 +54,6 @@ export const demos: Demo[] = [
     backend: "Node.js / TypeScript",
     tags: ["OpenAPI", "Fastify", "TypeScript"],
     status: "planned",
-    href: "/demos/node/openapi-playground",
+    href: "/demos/node",
   },
 ];
