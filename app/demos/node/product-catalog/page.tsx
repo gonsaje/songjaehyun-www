@@ -1,5 +1,5 @@
 "use client";
-
+import Contact from "@/components/layout/Contact";
 import { useEffect, useMemo, useState } from "react";
 import { API_BASE_URL } from "@/lib/config";
 
@@ -123,7 +123,7 @@ export default function ProductCatalogPage() {
 		try {
 			setLoading(true);
 			setError(null);
-
+ 
 			const url = `${API_BASE_URL}/api/products${queryParams ? `?${queryParams}` : ""}`;
 
 			const response = await fetch(url, { cache: "no-store" });
@@ -550,7 +550,7 @@ export default function ProductCatalogPage() {
 						) : null}
 
 						{!loading && !error && products.length > 0 && (
-							<div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
+							<div className="mt-10 grid gap-6 sm:grid-cols-2">
 								{products.map((product) => (
 									<article
 										key={product.id}
