@@ -292,6 +292,56 @@ node-api.songjaehyun.com → Node API backend (ECS / Fargate)`}
     </div>
   </div>
 </section>
+
+      <section className="mt-16 rounded-3xl border border-gray-200 p-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+          Delivery pipeline
+        </p>
+
+        <h2 className="mt-3 text-3xl font-semibold tracking-tight">
+          CI/CD with GitHub Actions + AWS OIDC
+        </h2>
+
+        <p className="mt-4 max-w-4xl text-lg leading-8 text-gray-600">
+          Frontend deployments are automated through GitHub Actions. On each push
+          to the main branch, the workflow installs dependencies, builds the
+          static site, and syncs assets to the S3 frontend bucket. Authentication
+          is handled with OpenID Connect (OIDC), so no long-lived AWS access keys
+          are stored in GitHub.
+        </p>
+
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          <div className="rounded-2xl bg-gray-50 p-5">
+            <p className="text-sm font-semibold text-gray-900">
+              1. Build in GitHub
+            </p>
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              A push to main triggers the workflow, runs the project build, and
+              prepares static output for deployment.
+            </p>
+          </div>
+
+          <div className="rounded-2xl bg-gray-50 p-5">
+            <p className="text-sm font-semibold text-gray-900">
+              2. Assume AWS role
+            </p>
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              The workflow exchanges a GitHub OIDC token for a temporary IAM role
+              session scoped to deployment permissions.
+            </p>
+          </div>
+
+          <div className="rounded-2xl bg-gray-50 p-5">
+            <p className="text-sm font-semibold text-gray-900">
+              3. Publish and refresh
+            </p>
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              Built files are synced to S3 and CloudFront can be invalidated so
+              users receive updated content globally.
+            </p>
+          </div>
+        </div>
+      </section>
 <Contact/>
     </main>
   );
