@@ -10,39 +10,86 @@ import { vectorAveraging } from "@/lib/vectorAveraging";
 import type { Entry } from "@/types/ghostcat";
 import { vectorKeys } from "@/types/ghostcat";
 
-const mockCurrentUser = {
-  id: "ghostcat-user-001",
-  name: "ghostcat",
+type DemoProfile = {
+  id: string;
+  name: string;
+  note: string;
+  seedTexts: string[];
 };
-
-const seedTexts = [
-  "night was quiet after the run. i felt alive, then suddenly very still.",
-  "missed the train and almost got angry, but the walk home softened something.",
-  "a warm hand on my shoulder. no big answer. just enough.",
-  "realized i could continue without proving the whole thing tonight.",
-];
 
 const seedDates = [
   "2026-04-27T13:10:00.000Z",
   "2026-04-26T20:30:00.000Z",
   "2026-04-26T01:15:00.000Z",
   "2026-04-24T22:45:00.000Z",
+  "2026-04-23T18:20:00.000Z",
 ];
 
-const seededEntries: Entry[] = seedTexts.map((rawText, index) => {
-  return {
-    id: `seed-${index}`,
-    rawText,
-    createdAt: seedDates[index],
-    emotionalVector: mockVectorExtractor(rawText),
-    privateReflection: mockReflection(rawText),
-    userId: mockCurrentUser.id,
-  };
-});
+const demoProfiles = [
+  {
+    id: "runner",
+    name: "night runner",
+    note: "alive, restless, moving forward",
+    seedTexts: [
+      "night was quiet after the run. i felt alive, then suddenly very still.",
+      "sweat cooling on my neck. fast thoughts, fire in my chest, then a softer walk home.",
+      "i kept moving forward even when the pressure got tight.",
+      "finished the hill and understood i was not angry anymore.",
+    ],
+  },
+  {
+    id: "letter",
+    name: "unsent letter",
+    note: "warm, aching, held back",
+    seedTexts: [
+      "a warm hand on my shoulder. no big answer. just enough.",
+      "i miss the old kitchen light and the soft way we almost said everything.",
+      "there was love in the silence, gentle but unfinished.",
+      "i wanted to call, but hope felt kinder when held quietly.",
+    ],
+  },
+  {
+    id: "clearer",
+    name: "clearer morning",
+    note: "calm, honest, newly understood",
+    seedTexts: [
+      "realized i could continue without proving the whole thing tonight.",
+      "the morning was slow and clear. i understood what had been heavy.",
+      "honest words came easier after breathing for a while.",
+      "i felt steady enough to finish one small true thing.",
+    ],
+  },
+  {
+    id: "yours",
+    name: "empty room",
+    note: "start with your own traces",
+    seedTexts: [],
+  },
+] as const satisfies readonly DemoProfile[];
+
+const createEntriesForProfile = (profile: DemoProfile): Entry[] => {
+  return profile.seedTexts.map((rawText, index) => {
+    return {
+      id: `${profile.id}-seed-${index}`,
+      rawText,
+      createdAt: seedDates[index],
+      emotionalVector: mockVectorExtractor(rawText),
+      privateReflection: mockReflection(rawText),
+      userId: profile.id,
+    };
+  });
+};
+
+const initialEntriesByProfile = demoProfiles.reduce<Record<string, Entry[]>>((profiles, profile) => {
+  profiles[profile.id] = createEntriesForProfile(profile);
+  return profiles;
+}, {});
 
 export default function Home() {
-  const [entries, setEntries] = useState<Entry[]>(seededEntries);
-  const userEntries = entries.filter((entry) => entry.userId === mockCurrentUser.id);
+  const [activeProfileId, setActiveProfileId] = useState<string>(demoProfiles[0].id);
+  const [entriesByProfile, setEntriesByProfile] = useState(initialEntriesByProfile);
+  const activeProfile = demoProfiles.find((profile) => profile.id === activeProfileId) ?? demoProfiles[0];
+  const userEntries = entriesByProfile[activeProfile.id] ?? [];
   const ghostVector = useMemo(() => vectorAveraging(userEntries), [userEntries]);
   const topTraces = useMemo(() => {
     return [...vectorKeys]
@@ -57,10 +104,15 @@ export default function Home() {
       createdAt: new Date().toISOString(),
       emotionalVector: mockVectorExtractor(rawText),
       privateReflection: mockReflection(rawText),
-      userId: mockCurrentUser.id,
+      userId: activeProfile.id,
     };
 
-    setEntries((currentEntries) => [entry, ...currentEntries]);
+    setEntriesByProfile((currentEntriesByProfile) => {
+      return {
+        ...currentEntriesByProfile,
+        [activeProfile.id]: [entry, ...(currentEntriesByProfile[activeProfile.id] ?? [])],
+      };
+    });
   };
 
   return (
@@ -76,6 +128,31 @@ export default function Home() {
               <span>seen, not explained</span>
             </header>
 
+            <section className="space-y-3" aria-label="Demo profiles">
+              <div className="flex flex-wrap gap-2">
+                {demoProfiles.map((profile) => {
+                  const isActive = profile.id === activeProfile.id;
+
+                  return (
+                    <button
+                      key={profile.id}
+                      type="button"
+                      onClick={() => setActiveProfileId(profile.id)}
+                      className={[
+                        "rounded-full border px-4 py-2 text-sm transition focus:outline-none focus:ring-2 focus:ring-ember/30",
+                        isActive
+                          ? "border-ember/45 bg-ember/15 text-mist"
+                          : "border-white/10 bg-white/[0.025] text-hush hover:border-white/20 hover:text-mist",
+                      ].join(" ")}
+                    >
+                      {profile.name}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-sm leading-6 text-hush">{activeProfile.note}</p>
+            </section>
+
             <ReflectionForm onSubmit={handleCreateEntry} />
           </div>
 
@@ -84,12 +161,20 @@ export default function Home() {
 
         <aside className="lg:sticky lg:top-8 lg:flex lg:h-[calc(100vh-4rem)] lg:items-center" aria-label="Public ghost preview">
           <div className="w-full rounded-[2rem] border border-white/10 bg-dusk/55 p-5 shadow-hush backdrop-blur sm:p-8">
-            <div className="mb-4 text-right text-sm text-hush">ghostcat</div>
+            <div className="mb-4 flex items-center justify-between gap-4 text-sm">
+              <span className="text-mist">{activeProfile.name}</span>
+              <span className="text-hush">{userEntries.length} traces</span>
+            </div>
             <GhostSignature vector={ghostVector} />
             <section className="mt-7 border-t border-white/10 pt-6" aria-label="Trace breakdown">
               <p className="text-sm leading-6 text-hush">
-                your traces consist mostly of{" "}
-                <span className="text-mist">{topTraces.join(", ")}</span>.
+                {userEntries.length > 0 ? (
+                  <>
+                    your traces consist mostly of <span className="text-mist">{topTraces.join(", ")}</span>.
+                  </>
+                ) : (
+                  <>your traces will appear here as you leave entries.</>
+                )}
               </p>
 
               <div className="mt-5 space-y-3">

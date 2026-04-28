@@ -1,4 +1,5 @@
 import type { EmotionalVector } from "@/types/ghostcat";
+import { vectorKeys } from "@/types/ghostcat";
 
 type GhostSignatureProps = {
   vector: EmotionalVector;
@@ -9,7 +10,66 @@ type Point = {
   y: number;
 };
 
+type Rgb = [number, number, number];
+
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
+
+const tracePalette = {
+  calm: [76, 190, 176],
+  tension: [238, 92, 92],
+  longing: [176, 116, 236],
+  energy: [246, 170, 72],
+  clarity: [89, 165, 246],
+  tenderness: [244, 132, 166],
+  solitude: [104, 116, 216],
+  momentum: [114, 202, 106],
+} satisfies Record<keyof EmotionalVector, Rgb>;
+
+const mixColor = (left: Rgb, right: Rgb, amount: number): Rgb => {
+  const ratio = clamp(amount, 0, 1);
+
+  return [
+    Math.round(left[0] + (right[0] - left[0]) * ratio),
+    Math.round(left[1] + (right[1] - left[1]) * ratio),
+    Math.round(left[2] + (right[2] - left[2]) * ratio),
+  ];
+};
+
+const rgb = (color: Rgb) => `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+
+const getTraceColor = (vector: EmotionalVector) => {
+  const weights = vectorKeys.map((key) => {
+    return {
+      key,
+      value: Math.pow(vector[key], 2.15) + 0.018,
+    };
+  });
+  const strongest = [...weights].sort((left, right) => right.value - left.value).slice(0, 2);
+
+  strongest.forEach((trace, index) => {
+    trace.value *= index === 0 ? 2.8 : 1.55;
+  });
+
+  const totalWeight = weights.reduce((sum, trace) => sum + trace.value, 0);
+  const blended = weights.reduce<Rgb>(
+    (color, trace) => {
+      const traceColor = tracePalette[trace.key];
+
+      return [
+        color[0] + traceColor[0] * trace.value,
+        color[1] + traceColor[1] * trace.value,
+        color[2] + traceColor[2] * trace.value,
+      ];
+    },
+    [0, 0, 0],
+  );
+
+  const primary = blended.map((channel) => Math.round(channel / totalWeight)) as Rgb;
+  const accent = tracePalette[strongest[0].key];
+  const secondary = tracePalette[strongest[1]?.key ?? strongest[0].key];
+
+  return { primary, accent, secondary };
+};
 
 const createSmoothPath = (points: Point[]) => {
   const first = points[0];
@@ -59,12 +119,11 @@ export function GhostSignature({ vector }: GhostSignatureProps) {
   });
 
   const path = createSmoothPath(points);
-  const amber = Math.round(132 + warmth * 82);
-  const blue = Math.round(150 + vector.clarity * 52 - hush * 42);
-  const violet = Math.round(116 + vector.longing * 44 - vector.calm * 18);
-  const edge = `rgb(${Math.round(88 + warmth * 50)}, ${Math.round(91 + vector.clarity * 35)}, ${Math.round(104 + hush * 18)})`;
-  const core = `rgb(${amber}, ${Math.round(126 + warmth * 42)}, ${blue})`;
-  const shadow = `rgb(${Math.round(42 + warmth * 32)}, ${Math.round(40 + vector.clarity * 28)}, ${violet})`;
+  const traceColor = getTraceColor(vector);
+  const core = rgb(mixColor(traceColor.accent, [255, 248, 226], 0.24 + warmth * 0.12));
+  const shadow = rgb(mixColor(traceColor.primary, [10, 12, 18], 0.42 - vector.energy * 0.08));
+  const edge = rgb(mixColor(traceColor.secondary, [224, 232, 238], 0.28 + vector.clarity * 0.12));
+  const glow = rgb(mixColor(traceColor.accent, traceColor.primary, 0.38));
 
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[28rem]" aria-label="ghost signature">
@@ -80,12 +139,8 @@ export function GhostSignature({ vector }: GhostSignatureProps) {
           </filter>
           <filter id="ghost-glow" x="-60%" y="-60%" width="220%" height="220%">
             <feGaussianBlur stdDeviation={10 + warmth * 10} result="blur" />
-            <feColorMatrix
-              in="blur"
-              type="matrix"
-              values="1 0 0 0 0  0 0.82 0 0 0  0 0 0.65 0 0  0 0 0 0.48 0"
-              result="glow"
-            />
+            <feFlood floodColor={glow} floodOpacity={0.42 + vector.energy * 0.16} result="glow-color" />
+            <feComposite in="glow-color" in2="blur" operator="in" result="glow" />
             <feMerge>
               <feMergeNode in="glow" />
               <feMergeNode in="SourceGraphic" />
