@@ -1,5 +1,6 @@
 import type { Entry } from "@/types/ghostcat";
 import { vectorKeys } from "@/types/ghostcat";
+import { rgba, tracePalette } from "@/lib/ghostcatPalette";
 
 type PrivateEntriesProps = {
   entries: Entry[];
@@ -31,17 +32,40 @@ export function PrivateEntries({ entries }: PrivateEntriesProps) {
             </div>
             <p className="whitespace-pre-wrap text-[0.95rem] leading-7 text-mist/90">{entry.rawText}</p>
             <p className="mt-3 text-sm leading-6 text-hush">{entry.privateReflection}</p>
-            <div className="mt-4 grid grid-cols-8 gap-1.5" aria-hidden="true">
-              {vectorKeys.map((key) => (
-                <span
-                  key={key}
-                  className="h-1.5 rounded-full bg-mist/20"
-                  style={{
-                    opacity: 0.18 + entry.emotionalVector[key] * 0.56,
-                    transform: `scaleY(${0.7 + entry.emotionalVector[key] * 1.6})`,
-                  }}
-                />
-              ))}
+            <div className="mt-4 grid grid-cols-8 gap-1.5" aria-label="Emotional trace weights">
+              {vectorKeys.map((key) => {
+                const strength = entry.emotionalVector[key];
+                const color = tracePalette[key];
+
+                return (
+                  <span
+                    key={key}
+                    className="group relative flex h-6 items-center"
+                    aria-label={`${key}: ${Math.round(strength * 100)}%`}
+                  >
+                    <span
+                      className="block h-1.5 w-full rounded-full border transition duration-200 group-hover:opacity-100"
+                      style={{
+                        backgroundColor: rgba(color, 0.1 + strength * 0.32),
+                        borderColor: rgba(color, 0.12 + strength * 0.22),
+                        boxShadow: `0 0 ${4 + strength * 12}px ${rgba(color, 0.04 + strength * 0.12)}`,
+                        opacity: 0.34 + strength * 0.5,
+                        transform: `scaleY(${0.7 + strength * 1.6})`,
+                      }}
+                    />
+                    <span
+                      className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1.5 -translate-x-1/2 translate-y-1 whitespace-nowrap rounded-[0.35rem] border px-2 py-1 text-[0.62rem] uppercase tracking-[0.14em] opacity-0 shadow-hush transition duration-150 group-hover:translate-y-0 group-hover:opacity-100"
+                      style={{
+                        backgroundColor: rgba(color, 0.18),
+                        borderColor: rgba(color, 0.36),
+                        color: rgba(color, 0.95),
+                      }}
+                    >
+                      {key}
+                    </span>
+                  </span>
+                );
+              })}
             </div>
           </article>
         ))}

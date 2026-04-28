@@ -124,7 +124,17 @@ export default function Home() {
         <section className="flex min-h-[calc(100vh-3.5rem)] flex-col justify-between gap-12 py-6">
           <div className="space-y-16">
             <header className="flex items-center justify-between text-sm text-hush">
-              <span className="text-mist">ghostcat</span>
+              <div className="flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/ghostcat.png"
+                  alt=""
+                  width={52}
+                  height={52}
+                  className="h-12 w-12 object-contain sm:h-14 sm:w-14"
+                />
+                <span className="text-mist">ghostcat</span>
+              </div>
               <span>seen, not explained</span>
             </header>
 

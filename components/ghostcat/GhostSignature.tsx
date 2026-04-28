@@ -1,5 +1,6 @@
 import type { EmotionalVector } from "@/types/ghostcat";
 import { vectorKeys } from "@/types/ghostcat";
+import { rgb, tracePalette, type Rgb } from "@/lib/ghostcatPalette";
 
 type GhostSignatureProps = {
   vector: EmotionalVector;
@@ -10,20 +11,7 @@ type Point = {
   y: number;
 };
 
-type Rgb = [number, number, number];
-
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(max, value));
-
-const tracePalette = {
-  calm: [76, 190, 176],
-  tension: [238, 92, 92],
-  longing: [176, 116, 236],
-  energy: [246, 170, 72],
-  clarity: [89, 165, 246],
-  tenderness: [244, 132, 166],
-  solitude: [104, 116, 216],
-  momentum: [114, 202, 106],
-} satisfies Record<keyof EmotionalVector, Rgb>;
 
 const mixColor = (left: Rgb, right: Rgb, amount: number): Rgb => {
   const ratio = clamp(amount, 0, 1);
@@ -34,8 +22,6 @@ const mixColor = (left: Rgb, right: Rgb, amount: number): Rgb => {
     Math.round(left[2] + (right[2] - left[2]) * ratio),
   ];
 };
-
-const rgb = (color: Rgb) => `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
 
 const getTraceColor = (vector: EmotionalVector) => {
   const weights = vectorKeys.map((key) => {
