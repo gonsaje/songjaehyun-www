@@ -8,6 +8,7 @@ import { mockReflection } from "@/lib/mockReflections";
 import { mockVectorExtractor } from "@/lib/mockVectorExtractor";
 import { vectorAveraging } from "@/lib/vectorAveraging";
 import type { Entry } from "@/types/ghostcat";
+import { vectorKeys } from "@/types/ghostcat";
 
 const mockCurrentUser = {
   id: "ghostcat-user-001",
@@ -43,6 +44,11 @@ export default function Home() {
   const [entries, setEntries] = useState<Entry[]>(seededEntries);
   const userEntries = entries.filter((entry) => entry.userId === mockCurrentUser.id);
   const ghostVector = useMemo(() => vectorAveraging(userEntries), [userEntries]);
+  const topTraces = useMemo(() => {
+    return [...vectorKeys]
+      .sort((left, right) => ghostVector[right] - ghostVector[left])
+      .slice(0, 3);
+  }, [ghostVector]);
 
   const handleCreateEntry = (rawText: string) => {
     const entry: Entry = {
@@ -58,7 +64,10 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen px-5 py-7 sm:px-8 lg:px-12">
+    <main
+      data-ghostcat-theme
+      className="ghostcat-theme min-h-screen bg-[#020203] px-5 py-7 text-[#f4f0e8] sm:px-8 lg:px-12"
+    >
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.88fr)] lg:gap-14">
         <section className="flex min-h-[calc(100vh-3.5rem)] flex-col justify-between gap-12 py-6">
           <div className="space-y-16">
@@ -77,6 +86,31 @@ export default function Home() {
           <div className="w-full rounded-[2rem] border border-white/10 bg-dusk/55 p-5 shadow-hush backdrop-blur sm:p-8">
             <div className="mb-4 text-right text-sm text-hush">ghostcat</div>
             <GhostSignature vector={ghostVector} />
+            <section className="mt-7 border-t border-white/10 pt-6" aria-label="Trace breakdown">
+              <p className="text-sm leading-6 text-hush">
+                your traces consist mostly of{" "}
+                <span className="text-mist">{topTraces.join(", ")}</span>.
+              </p>
+
+              <div className="mt-5 space-y-3">
+                {vectorKeys.map((key) => {
+                  const percentage = Math.round(ghostVector[key] * 100);
+
+                  return (
+                    <div key={key} className="grid grid-cols-[5.75rem_minmax(0,1fr)_2.5rem] items-center gap-3">
+                      <span className="text-xs uppercase tracking-[0.18em] text-hush">{key}</span>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-white/10" aria-hidden="true">
+                        <div
+                          className="h-full rounded-full bg-mist/75"
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                      <span className="text-right text-xs tabular-nums text-hush">{percentage}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
           </div>
         </aside>
       </div>
