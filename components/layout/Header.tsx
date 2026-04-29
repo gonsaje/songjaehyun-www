@@ -12,6 +12,10 @@ const nodeDemos = [
 	{ name: "Product Catalog API", href: "/demos/node/product-catalog" },
 ];
 
+const aiDemos = [
+	{ name: "ghostcat", href: "/ghostcat" },
+];
+
 export default function Header() {
 	const [demosOpen, setDemosOpen] = useState(false);
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -96,8 +100,8 @@ export default function Header() {
 
 							{demosOpen && (
 								<div className="absolute right-0 top-full pt-2">
-									<div className="w-[420px] rounded-2xl border border-gray-200 bg-white p-4 shadow-xl">
-										<div className="grid grid-cols-2 gap-4">
+									<div className="w-[320px] rounded-2xl border border-gray-200 bg-white p-4 shadow-xl">
+										<div className="space-y-4">
 											<div>
 												<p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
 													Java
@@ -121,6 +125,23 @@ export default function Header() {
 												</p>
 												<div className="flex flex-col gap-1">
 													{nodeDemos.map((demo) => (
+														<Link
+															key={demo.href}
+															href={demo.href}
+															className="rounded-lg px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50 hover:text-black"
+														>
+															{demo.name}
+														</Link>
+													))}
+												</div>
+											</div>
+
+											<div>
+												<p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+													AI/Python
+												</p>
+												<div className="flex flex-col gap-1">
+													{aiDemos.map((demo) => (
 														<Link
 															key={demo.href}
 															href={demo.href}
@@ -225,7 +246,7 @@ export default function Header() {
 								</Link>
 							</div>
 
-							<div className="mt-8 grid gap-6 sm:grid-cols-2">
+							<div className="mt-8 grid gap-6">
 								<div>
 									<p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
 										Java demos
@@ -250,6 +271,23 @@ export default function Header() {
 									</p>
 									<div className="flex flex-col gap-3">
 										{nodeDemos.map((demo) => (
+											<Link
+												key={demo.href}
+												href={demo.href}
+												onClick={() => setMobileMenuOpen(false)}
+												className="text-sm text-gray-600 transition hover:text-black"
+											>
+												{demo.name}
+											</Link>
+										))}
+									</div>
+								</div>
+								<div>
+									<p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+										AI/Python
+									</p>
+									<div className="flex flex-col gap-3">
+										{aiDemos.map((demo) => (
 											<Link
 												key={demo.href}
 												href={demo.href}
