@@ -143,6 +143,13 @@ body:has([data-ghostcat-theme]) {
   color: #f4f0e8;
 }
 
+.ghostcat-wordmark {
+  font-family: "Special Elite", "Courier New", monospace;
+  font-size: 1.45rem;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
 .ghostcat-theme .text-mist,
 .ghostcat-theme .text-mist\/90,
 .ghostcat-theme label,

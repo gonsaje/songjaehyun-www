@@ -123,7 +123,7 @@ export default function Home() {
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.88fr)] lg:gap-14">
         <section className="flex min-h-[calc(100vh-3.5rem)] flex-col justify-between gap-12 py-6">
           <div className="space-y-16">
-            <header className="flex items-center justify-between text-sm text-hush">
+            <header className="flex flex-col gap-5 text-sm text-hush sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -133,9 +133,12 @@ export default function Home() {
                   height={52}
                   className="h-12 w-12 object-contain sm:h-14 sm:w-14"
                 />
-                <span className="text-mist">ghostcat</span>
+                <span className="ghostcat-wordmark text-mist">ghostcat</span>
               </div>
-              <span>seen, not explained</span>
+              <p className="max-w-[15rem] border-l border-ember/35 pl-4 text-left text-[0.7rem] uppercase leading-5 tracking-[0.24em] sm:border-l-0 sm:border-r sm:pl-0 sm:pr-4 sm:text-right">
+                <span className="block text-mist/90">beautiful things</span>
+                <span className="block text-hush">do not ask for attention</span>
+              </p>
             </header>
 
             <section className="space-y-3" aria-label="Demo profiles">

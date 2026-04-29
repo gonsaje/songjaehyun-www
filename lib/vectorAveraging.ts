@@ -3,13 +3,13 @@ import { vectorKeys } from "@/types/ghostcat";
 
 const emptyVector: EmotionalVector = {
   calm: 0.5,
-  tension: 0.2,
-  longing: 0.35,
-  energy: 0.25,
-  clarity: 0.45,
-  tenderness: 0.45,
-  solitude: 0.4,
-  momentum: 0.25,
+  tension: 0.5,
+  longing: 0.5,
+  energy: 0.5,
+  clarity: 0.5,
+  tenderness: 0.5,
+  solitude: 0.5,
+  momentum: 0.5,
 };
 
 export function vectorAveraging(entries: Entry[]): EmotionalVector {
