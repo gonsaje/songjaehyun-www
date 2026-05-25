@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { GhostSignature } from "@/components/ghostcat/GhostSignature";
 import { PrivateEntries } from "@/components/ghostcat/PrivateEntries";
 import { ReflectionForm } from "@/components/ghostcat/ReflectionForm";
+import { extractContextualVector } from "@/lib/contextualVectorExtractor";
 import { mockReflection } from "@/lib/mockReflections";
 import { mockVectorExtractor } from "@/lib/mockVectorExtractor";
 import { vectorAveraging } from "@/lib/vectorAveraging";
@@ -97,12 +98,14 @@ export default function Home() {
       .slice(0, 3);
   }, [ghostVector]);
 
-  const handleCreateEntry = (rawText: string) => {
+  const handleCreateEntry = async (rawText: string) => {
+    const contextualVector = await extractContextualVector(rawText);
+
     const entry: Entry = {
       id: `entry-${Date.now()}`,
       rawText,
       createdAt: new Date().toISOString(),
-      emotionalVector: mockVectorExtractor(rawText),
+      emotionalVector: contextualVector ?? mockVectorExtractor(rawText),
       privateReflection: mockReflection(rawText),
       userId: activeProfile.id,
     };

@@ -30,6 +30,34 @@ const hashUnit = (input: string, salt: string) => {
   return (hash % 1000) / 1000;
 };
 
+const negationWords = new Set(["not", "no", "never", "didn't", "dont", "don't", "wasn't", "isn't", "without"]);
+
+const isNegated = (words: string[], index: number) => {
+  const windowStart = Math.max(0, index - 3);
+  const previousWords = words.slice(windowStart, index);
+
+  return previousWords.some((word) => negationWords.has(word));
+};
+
+const countKeywordMatches = (words: string[], hints: string[]) => {
+  return hints.reduce(
+    (counts, hint) => {
+      words.forEach((word, index) => {
+        if (!word.includes(hint)) return;
+
+        if (isNegated(words, index)) {
+          counts.negated += 1;
+        } else {
+          counts.positive += 1;
+        }
+      });
+
+      return counts;
+    },
+    { positive: 0, negated: 0 },
+  );
+};
+
 export function mockVectorExtractor(rawText: string): EmotionalVector {
   const normalized = rawText.toLowerCase();
   const words = normalized.match(/[a-z']+/g) ?? [];
@@ -37,19 +65,19 @@ export function mockVectorExtractor(rawText: string): EmotionalVector {
   const sentenceCount = Math.max(1, rawText.split(/[.!?]+/).filter(Boolean).length);
   const exclamationCount = (rawText.match(/!/g) ?? []).length;
   const questionCount = (rawText.match(/\?/g) ?? []).length;
+  const tensionMatches = countKeywordMatches(words, keywordHints.tension);
 
   return vectorKeys.reduce((vector, key) => {
-    const matches = keywordHints[key].reduce((count, hint) => {
-      return count + words.filter((word) => word.includes(hint)).length;
-    }, 0);
+    const matches = countKeywordMatches(words, keywordHints[key]);
 
-    const keywordScore = Math.min(0.52, matches * 0.14);
+    const keywordScore = Math.min(0.52, matches.positive * 0.14) - Math.min(0.24, matches.negated * 0.1);
     const lengthScore = clamp01(textLength / 420) * 0.12;
     const sentenceScore = clamp01(sentenceCount / 5) * 0.08;
     const variation = (hashUnit(normalized, key) - 0.5) * 0.16;
 
     let value = 0.24 + keywordScore + lengthScore + sentenceScore + variation;
 
+    if (key === "calm") value += Math.min(0.22, tensionMatches.negated * 0.16);
     if (key === "tension") value += clamp01(exclamationCount / 3) * 0.18;
     if (key === "energy") value += clamp01(exclamationCount / 4) * 0.12;
     if (key === "clarity") value += clamp01(questionCount / 3) * 0.08;

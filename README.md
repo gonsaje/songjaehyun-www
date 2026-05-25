@@ -18,6 +18,20 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Ghostcat OpenAI vector extraction
+
+Ghostcat works without a backend by using `lib/mockVectorExtractor.ts`. To try contextual extraction with OpenAI, run the optional Python service in another terminal:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-ghostcat.txt
+export OPENAI_API_KEY="your-api-key"
+uvicorn scripts.ghostcat_vector_api:app --reload --port 8000
+```
+
+The frontend calls `http://127.0.0.1:8000/vector` by default. Override it with `NEXT_PUBLIC_GHOSTCAT_VECTOR_API` if needed.
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More

@@ -3,20 +3,27 @@
 import { FormEvent, useState } from "react";
 
 type ReflectionFormProps = {
-  onSubmit: (rawText: string) => void;
+  onSubmit: (rawText: string) => void | Promise<void>;
 };
 
 export function ReflectionForm({ onSubmit }: ReflectionFormProps) {
   const [rawText, setRawText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmed = rawText.trim();
 
-    if (!trimmed) return;
+    if (!trimmed || isSubmitting) return;
 
-    onSubmit(trimmed);
-    setRawText("");
+    setIsSubmitting(true);
+
+    try {
+      await onSubmit(trimmed);
+      setRawText("");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -36,9 +43,10 @@ export function ReflectionForm({ onSubmit }: ReflectionFormProps) {
         <p className="max-w-xs text-sm leading-6 text-hush">nothing here asks to be performed</p>
         <button
           type="submit"
+          disabled={isSubmitting}
           className="rounded-full border border-ember/25 bg-ember/10 px-5 py-2.5 text-sm text-mist transition hover:border-ember/45 hover:bg-ember/15 focus:outline-none focus:ring-2 focus:ring-ember/30"
         >
-          keep
+          {isSubmitting ? "reading" : "keep"}
         </button>
       </div>
     </form>
