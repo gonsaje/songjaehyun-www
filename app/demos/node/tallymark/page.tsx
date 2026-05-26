@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
 	TALLYMARK_API_BASE_URL,
@@ -740,135 +740,143 @@ export default function TallymarkDemoPage() {
 	};
 
 	return (
-		<main className="min-h-screen bg-slate-100 text-slate-950">
-			<section className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
-				<div className="border-b border-slate-200 pb-4">
-					<p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-						Node Backend Demo
-					</p>
-					<div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-						<div>
-							<h1 className="text-3xl font-semibold tracking-tight">
-								Tallymark Operations Cockpit
-							</h1>
-							<p className="mt-2 text-sm text-slate-600">
-								Tallymark / Funds / {selectedFund?.name ?? "No fund selected"} /{" "}
-								{selectedRun ? `Run ${selectedRun.id}` : "Latest Run"}
-							</p>
+		<Suspense fallback={
+			<main className="min-h-screen bg-slate-100 px-6 py-8 text-slate-950">
+			<div className="mx-auto max-w-[1500px] rounded-xl border border-slate-200 bg-white p-6">
+				Loading Tallymark...
+			</div>
+			</main>
+		}>
+			<main className="min-h-screen bg-slate-100 text-slate-950">
+				<section className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
+					<div className="border-b border-slate-200 pb-4">
+						<p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+							Node Backend Demo
+						</p>
+						<div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+							<div>
+								<h1 className="text-3xl font-semibold tracking-tight">
+									Tallymark Operations Cockpit
+								</h1>
+								<p className="mt-2 text-sm text-slate-600">
+									Tallymark / Funds / {selectedFund?.name ?? "No fund selected"} /{" "}
+									{selectedRun ? `Run ${selectedRun.id}` : "Latest Run"}
+								</p>
+							</div>
+							<code className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-700">
+								{TALLYMARK_API_BASE_URL}/api/tallymark
+							</code>
 						</div>
-						<code className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-700">
-							{TALLYMARK_API_BASE_URL}/api/tallymark
-						</code>
 					</div>
-				</div>
 
-				<TallymarkActionBar
-					selectedFund={selectedFund}
-					loading={loading}
-				/>
+					<TallymarkActionBar
+						selectedFund={selectedFund}
+						loading={loading}
+					/>
 
-				<AggregateSummaryBar stats={aggregateStats} loading={loading.dashboard} />
+					<AggregateSummaryBar stats={aggregateStats} loading={loading.dashboard} />
 
-				{error && (
-					<div className="mt-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-						{error}
-					</div>
-				)}
+					{error && (
+						<div className="mt-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+							{error}
+						</div>
+					)}
 
-				<div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
-					<div className="space-y-5">
-						<OperationsDashboard
-							activeTab={dashboardTab}
-							onTabChange={setDashboardTab}
-							funds={
-								<FundSelector
-									funds={funds}
-									fundSummaries={fundSummaries}
-									selectedFundId={selectedFundId}
-									loading={loading.funds}
-									healthSnapshot={healthSnapshot}
-									onSelectFund={handleSelectFund}
-								/>
-							}
-							investors={
-								<InvestorSummaryTable
-									investors={investorSummaries}
-									loading={loading.dashboard}
-									error={investorSummaryError}
-									onSelectInvestor={handleSelectInvestorSummary}
-								/>
-							}
-						/>
+					<div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+						<div className="space-y-5">
+							<OperationsDashboard
+								activeTab={dashboardTab}
+								onTabChange={setDashboardTab}
+								funds={
+									<FundSelector
+										funds={funds}
+										fundSummaries={fundSummaries}
+										selectedFundId={selectedFundId}
+										loading={loading.funds}
+										healthSnapshot={healthSnapshot}
+										onSelectFund={handleSelectFund}
+									/>
+								}
+								investors={
+									<InvestorSummaryTable
+										investors={investorSummaries}
+										loading={loading.dashboard}
+										error={investorSummaryError}
+										onSelectInvestor={handleSelectInvestorSummary}
+									/>
+								}
+							/>
 
-						<TallymarkWorkspace
-							activeView={activeView}
-							selectedFund={selectedFund}
-							selectedSummary={
-								selectedFundId ? fundSummaries[selectedFundId] : undefined
-							}
-							investors={investors}
-							fundInvestorSummaries={fundInvestorSummaries}
-							transactions={transactions}
-							reconciliationRuns={reconciliationRuns}
+							<TallymarkWorkspace
+								activeView={activeView}
+								selectedFund={selectedFund}
+								selectedSummary={
+									selectedFundId ? fundSummaries[selectedFundId] : undefined
+								}
+								investors={investors}
+								fundInvestorSummaries={fundInvestorSummaries}
+								transactions={transactions}
+								reconciliationRuns={reconciliationRuns}
+								reviewIssues={reviewIssues}
+								selectedIssue={selectedIssue}
+								selectedInvestorId={selectedInvestorId}
+								issueEvents={issueEvents}
+								issueNote={issueNote}
+								actionSuccess={actionSuccess}
+								settlementDateInput={settlementDateInput}
+								investorIdInput={investorIdInput}
+								referenceInput={referenceInput}
+								transactionTypeInput={transactionTypeInput}
+								scheduledAt={scheduledAt}
+								loading={loading}
+								issueStatusFilter={issueStatusFilter}
+								issueSeverityFilter={issueSeverityFilter}
+								issueTypeFilter={issueTypeFilter}
+								issueInvestorFilter={issueInvestorFilter}
+								issueTransactionTypeFilter={issueTransactionTypeFilter}
+								onViewChange={handleViewChange}
+								onStartReconciliation={handleStartReconciliation}
+								onSelectIssue={handleSelectIssue}
+								onSelectRun={handleSelectRun}
+								onDismissIssue={(note) =>
+									handleUpdateIssueStatus("dismissed", note)
+								}
+								onApplyIssueFix={handleApplyIssueFix}
+								onIssueNoteChange={setIssueNote}
+								onSettlementDateChange={setSettlementDateInput}
+								onInvestorIdChange={setInvestorIdInput}
+								onReferenceChange={setReferenceInput}
+								onTransactionTypeChange={setTransactionTypeInput}
+								onScheduledAtChange={setScheduledAt}
+								onScheduleRun={handleScheduleRun}
+								onCancelRun={handleCancelRun}
+								onIssueStatusFilterChange={setIssueStatusFilter}
+								onIssueSeverityFilterChange={setIssueSeverityFilter}
+								onIssueTypeFilterChange={setIssueTypeFilter}
+								onIssueInvestorFilterChange={setIssueInvestorFilter}
+								onIssueTransactionTypeFilterChange={
+									setIssueTransactionTypeFilter
+								}
+							/>
+						</div>
+
+						<TallymarkCompanionPanel
 							reviewIssues={reviewIssues}
-							selectedIssue={selectedIssue}
-							selectedInvestorId={selectedInvestorId}
+							reconciliationRuns={reconciliationRuns}
 							issueEvents={issueEvents}
-							issueNote={issueNote}
-							actionSuccess={actionSuccess}
-							settlementDateInput={settlementDateInput}
-							investorIdInput={investorIdInput}
-							referenceInput={referenceInput}
-							transactionTypeInput={transactionTypeInput}
-							scheduledAt={scheduledAt}
-							loading={loading}
-							issueStatusFilter={issueStatusFilter}
-							issueSeverityFilter={issueSeverityFilter}
-							issueTypeFilter={issueTypeFilter}
-							issueInvestorFilter={issueInvestorFilter}
-							issueTransactionTypeFilter={issueTransactionTypeFilter}
-							onViewChange={handleViewChange}
-							onStartReconciliation={handleStartReconciliation}
 							onSelectIssue={handleSelectIssue}
 							onSelectRun={handleSelectRun}
-							onDismissIssue={(note) =>
-								handleUpdateIssueStatus("dismissed", note)
-							}
-							onApplyIssueFix={handleApplyIssueFix}
-							onIssueNoteChange={setIssueNote}
-							onSettlementDateChange={setSettlementDateInput}
-							onInvestorIdChange={setInvestorIdInput}
-							onReferenceChange={setReferenceInput}
-							onTransactionTypeChange={setTransactionTypeInput}
-							onScheduledAtChange={setScheduledAt}
-							onScheduleRun={handleScheduleRun}
-							onCancelRun={handleCancelRun}
-							onIssueStatusFilterChange={setIssueStatusFilter}
-							onIssueSeverityFilterChange={setIssueSeverityFilter}
-							onIssueTypeFilterChange={setIssueTypeFilter}
-							onIssueInvestorFilterChange={setIssueInvestorFilter}
-							onIssueTransactionTypeFilterChange={
-								setIssueTransactionTypeFilter
-							}
 						/>
 					</div>
 
-					<TallymarkCompanionPanel
-						reviewIssues={reviewIssues}
-						reconciliationRuns={reconciliationRuns}
-						issueEvents={issueEvents}
-						onSelectIssue={handleSelectIssue}
-						onSelectRun={handleSelectRun}
+					<ApiActivityDrawer
+						activity={apiActivity}
+						open={apiDrawerOpen}
+						onToggle={() => setApiDrawerOpen((current) => !current)}
 					/>
-				</div>
-
-				<ApiActivityDrawer
-					activity={apiActivity}
-					open={apiDrawerOpen}
-					onToggle={() => setApiDrawerOpen((current) => !current)}
-				/>
-			</section>
-		</main>
+				</section>
+			</main>
+		</Suspense>
 	);
 }
 
