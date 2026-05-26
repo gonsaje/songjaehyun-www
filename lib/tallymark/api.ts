@@ -168,11 +168,13 @@ export function startReconciliationRun(fundId: string) {
 	);
 }
 
-export function startBatchReconciliationRuns(fundIds: string[]) {
-	return apiFetch<ReconciliationRun[]>("/api/tallymark/reconciliation-runs/batch", {
+export async function startBatchReconciliationRuns(fundIds: string[]) {
+	const response = await apiFetch<{ runs: ReconciliationRun[] }>("/api/tallymark/reconciliation-runs/batch", {
 		method: "POST",
 		body: JSON.stringify({ fundIds }),
 	});
+
+	return response.runs;
 }
 
 export function scheduleReconciliationRun(

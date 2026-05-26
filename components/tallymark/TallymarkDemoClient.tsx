@@ -22,6 +22,7 @@ import {
     listReviewIssuesByRun,
     listTransactionsByFund,
     scheduleReconciliationRun,
+    startBatchReconciliationRuns,
     startReconciliationRun,
     subscribeToTallymarkApiActivity,
     updateReviewIssueStatus,
@@ -95,6 +96,7 @@ export default function TallymarkDemoClient() {
     const didBootstrapRef = useRef(false);
 
     const [funds, setFunds] = useState<Fund[]>([]);
+    const [selectedBatchFundIds, setSelectedBatchFundIds] = useState<string[]>([]);
     const [fundSummaries, setFundSummaries] = useState<
         Record<string, TallymarkFundSummary>
     >({});
@@ -238,6 +240,7 @@ export default function TallymarkDemoClient() {
             );
 
             setFunds(summaries);
+            setSelectedBatchFundIds(summaries.map((summary) => summary.id));
             setFundSummaries(nextFundSummaries);
             setInvestorSummaries(sortInvestorSummaries(nextInvestorSummaries));
 
@@ -266,6 +269,12 @@ export default function TallymarkDemoClient() {
         if (!summaries) return;
 
         setFunds(summaries);
+        setSelectedBatchFundIds((current) => {
+            if (current.length === 0) return summaries.map((summary) => summary.id);
+
+            const summaryIds = new Set(summaries.map((summary) => summary.id));
+            return current.filter((fundId) => summaryIds.has(fundId));
+        });
         setFundSummaries(
             summaries.reduce<Record<string, TallymarkFundSummary>>(
                 (accumulator, summary) => {
@@ -403,6 +412,20 @@ export default function TallymarkDemoClient() {
         syncUrl({ fundId: summary.fundId, view: "transactions" });
     }
 
+    function handleToggleBatchFund(fundId: string) {
+        setSelectedBatchFundIds((current) =>
+            current.includes(fundId)
+                ? current.filter((selectedFundId) => selectedFundId !== fundId)
+                : [...current, fundId],
+        );
+    }
+
+    function handleToggleAllBatchFunds() {
+        setSelectedBatchFundIds((current) =>
+            current.length === funds.length ? [] : funds.map((fund) => fund.id),
+        );
+    }
+
     async function handleViewChange(view: WorkspaceView) {
         if (view === "investors" && selectedFundId && investors.length === 0) {
             const data = await runAction("investors", () =>
@@ -487,6 +510,45 @@ export default function TallymarkDemoClient() {
 
         if (["queued", "processing"].includes(run.status)) {
             beginPollingRun(run.id);
+        }
+    }
+
+    async function handleStartBatchReconciliation() {
+        const fundIds = selectedBatchFundIds;
+
+        if (fundIds.length === 0) {
+            setError("Select at least one fund before running batch reconciliation.");
+            return;
+        }
+
+        const runs = await runAction("runAction", () =>
+            startBatchReconciliationRuns(fundIds),
+        );
+        if (!runs) return;
+
+        await refreshFundSummaries();
+        await refreshInvestorSummaries();
+
+        if (selectedFundId) {
+            const fundRuns = await listReconciliationRunsByFund(selectedFundId).catch(
+                () => null,
+            );
+            if (fundRuns) setReconciliationRuns(fundRuns);
+        }
+
+        const visibleRun =
+            runs.find((run) => ["queued", "processing"].includes(run.status)) ??
+            runs[0];
+
+        if (visibleRun) {
+            setSelectedRun(visibleRun);
+            setSelectedRunId(visibleRun.id);
+            setActiveView("runs");
+            syncUrl({ runId: visibleRun.id, view: "runs" });
+
+            if (["queued", "processing"].includes(visibleRun.status)) {
+                beginPollingRun(visibleRun.id);
+            }
         }
     }
 
@@ -738,6 +800,15 @@ export default function TallymarkDemoClient() {
                 ),
             )[0],
     };
+    const selectedInvestorSummary =
+        investorSummaries.find((investor) => investor.id === selectedInvestorId) ??
+        fundInvestorSummaries.find((investor) => investor.id === selectedInvestorId);
+    const breadcrumb =
+        dashboardTab === "investors"
+            ? `Tallymark / Investors / ${selectedInvestorSummary?.name ?? "All investors"}`
+            : `Tallymark / Funds / ${selectedFund?.name ?? "No fund selected"} / ${
+                selectedRun ? `Run ${selectedRun.id}` : "Latest Run"
+            }`;
 
     return (
         <main className="min-h-screen bg-slate-100 text-slate-950">
@@ -761,8 +832,7 @@ export default function TallymarkDemoClient() {
                                 Tallymark Operations Cockpit
                             </h1>
                             <p className="mt-2 text-sm text-slate-600">
-                                Tallymark / Funds / {selectedFund?.name ?? "No fund selected"} /{" "}
-                                {selectedRun ? `Run ${selectedRun.id}` : "Latest Run"}
+                                {breadcrumb}
                             </p>
                         </div>
                         <code className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-700">
@@ -774,6 +844,9 @@ export default function TallymarkDemoClient() {
                 <TallymarkActionBar
                     selectedFund={selectedFund}
                     loading={loading}
+                    fundCount={funds.length}
+                    selectedBatchFundCount={selectedBatchFundIds.length}
+                    onRunAll={handleStartBatchReconciliation}
                 />
 
                 <AggregateSummaryBar stats={aggregateStats} loading={loading.dashboard} />
@@ -794,9 +867,12 @@ export default function TallymarkDemoClient() {
                                     funds={funds}
                                     fundSummaries={fundSummaries}
                                     selectedFundId={selectedFundId}
+                                    selectedBatchFundIds={selectedBatchFundIds}
                                     loading={loading.funds}
                                     healthSnapshot={healthSnapshot}
                                     onSelectFund={handleSelectFund}
+                                    onToggleBatchFund={handleToggleBatchFund}
+                                    onToggleAllBatchFunds={handleToggleAllBatchFunds}
                                 />
                             }
                             investors={
@@ -880,4 +956,3 @@ export default function TallymarkDemoClient() {
         </main>
     );
 }
-

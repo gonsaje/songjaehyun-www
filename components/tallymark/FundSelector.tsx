@@ -6,17 +6,26 @@ export default function FundSelector({
     funds,
     fundSummaries,
     selectedFundId,
+    selectedBatchFundIds,
     loading,
     healthSnapshot,
     onSelectFund,
+    onToggleBatchFund,
+    onToggleAllBatchFunds,
 }: {
     funds: Fund[];
     fundSummaries: Record<string, TallymarkFundSummary>;
     selectedFundId: string | null;
+    selectedBatchFundIds: string[];
     loading?: boolean;
     healthSnapshot: HealthSnapshot;
     onSelectFund: (fundId: string) => void | Promise<void>;
+    onToggleBatchFund: (fundId: string) => void;
+    onToggleAllBatchFunds: () => void;
 }) {
+    const allFundsSelected =
+        funds.length > 0 && selectedBatchFundIds.length === funds.length;
+
     return (
         <div className="p-4">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -29,6 +38,9 @@ export default function FundSelector({
                     <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-semibold text-slate-500">
                         {loading ? "Hydrating..." : `${funds.length} funds`}
                     </span>
+                    <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-semibold text-slate-500">
+                        {selectedBatchFundIds.length} selected
+                    </span>
                 </div>
             </div>
             {funds.length === 0 ? (
@@ -40,6 +52,15 @@ export default function FundSelector({
                     <table className="w-full min-w-[1120px] text-left text-sm">
                         <thead className="border-b border-slate-200 text-xs uppercase tracking-[0.14em] text-slate-500">
                             <tr>
+                                <th className="py-3 pl-4 pr-4 font-semibold">
+                                    <input
+                                        type="checkbox"
+                                        aria-label="Select all funds for batch reconciliation"
+                                        checked={allFundsSelected}
+                                        onChange={onToggleAllBatchFunds}
+                                        className="h-4 w-4 rounded border-slate-300 text-slate-950"
+                                    />
+                                </th>
                                 <th className="py-3 pr-4 font-semibold">Fund</th>
                                 <th className="py-3 pr-4 font-semibold">Strategy</th>
                                 <th className="py-3 pr-4 font-semibold">Vintage</th>
@@ -55,6 +76,7 @@ export default function FundSelector({
                         <tbody className="divide-y divide-slate-100">
                             {funds.map((fund) => {
                                 const selected = selectedFundId === fund.id;
+                                const batchSelected = selectedBatchFundIds.includes(fund.id);
                                 const summary = fundSummaries[fund.id];
 
                                 return (
@@ -68,6 +90,16 @@ export default function FundSelector({
                                                 : "hover:bg-slate-50",
                                         ].join(" ")}
                                     >
+                                        <td className="py-3 pl-4 pr-4">
+                                            <input
+                                                type="checkbox"
+                                                aria-label={`Select ${fund.name} for batch reconciliation`}
+                                                checked={batchSelected}
+                                                onClick={(event) => event.stopPropagation()}
+                                                onChange={() => onToggleBatchFund(fund.id)}
+                                                className="h-4 w-4 rounded border-slate-300 text-slate-950"
+                                            />
+                                        </td>
                                         <td className="py-3 pr-4">
                                             <p className="font-semibold">{fund.name}</p>
                                             <p
