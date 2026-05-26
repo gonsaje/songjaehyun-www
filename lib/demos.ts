@@ -35,6 +35,17 @@ export const demos: Demo[] = [
     href: "/demos/node/product-catalog",
   },
   {
+    slug: "tallymark",
+    title: "Tallymark Operations Cockpit",
+    category: "node",
+    summary:
+      "A reconciliation operations workspace for funds, runs, review issues, and API activity.",
+    backend: "Node.js / TypeScript",
+    tags: ["Node", "Workflow", "Async"],
+    status: "live",
+    href: "/demos/node/tallymark",
+  },
+  {
     slug: "rate-limiter",
     title: "Rate Limiter",
     category: "java",

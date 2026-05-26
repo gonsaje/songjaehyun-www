@@ -9,6 +9,7 @@ const javaDemos = [
 ];
 
 const nodeDemos = [
+	{ name: "Tallymark", href: "/demos/node/tallymark" },
 	{ name: "Product Catalog API", href: "/demos/node/product-catalog" },
 ];
 

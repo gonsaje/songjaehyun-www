@@ -11,6 +11,14 @@ const demos = [
     href: "/demos/java/expiring-kv",
     live: true
   },
+    {
+    eyebrow: "Node demo",
+    title: "Tallymark Operations Cockpit",
+    description:
+      "A SPA-style reconciliation console where operator actions call typed backend endpoints and update live workspace state.",
+    href: "/demos/node/tallymark",
+    live: true,
+  },
   {
     eyebrow: "Node demo",
     title: "Product API Demo",
