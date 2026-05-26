@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -743,9 +743,18 @@ export default function TallymarkDemoClient() {
         <main className="min-h-screen bg-slate-100 text-slate-950">
             <section className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
                 <div className="border-b border-slate-200 pb-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                        Node Backend Demo
-                    </p>
+                    <div className="mb-4 flex items-center justify-between">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                            Node Backend Demo
+                        </p>
+                        <Link
+                            href="/demos/node/tallymark/docs"
+                            className="rounded-full border border-brand-blue/15 bg-white px-4 py-2 text-sm font-medium text-brand-blue shadow-sm transition hover:bg-brand-blue hover:text-white"
+                        >
+                            View docs
+                        </Link>
+                    </div>
+
                     <div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                         <div>
                             <h1 className="text-3xl font-semibold tracking-tight">
