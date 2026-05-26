@@ -1,6 +1,6 @@
 import { TallymarkFundSummary } from "@/lib/tallymark/types";
 import Metric from "./shared/Metric";
-import formatDate from "@/lib/tallymark/utils";
+import { formatDate } from "@/lib/tallymark/utils";
 
 export default function AggregateSummaryBar({
     stats,

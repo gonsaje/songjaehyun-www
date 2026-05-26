@@ -1,5 +1,5 @@
 import { IssueEvent } from "@/lib/tallymark/types";
-import formatDate from "@/lib/tallymark/utils";
+import { formatDate } from "@/lib/tallymark/utils";
 
 export default function EventList({
     events,
