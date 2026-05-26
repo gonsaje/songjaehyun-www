@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
     TALLYMARK_API_BASE_URL,
     addSettlementDateToReviewIssue,
@@ -89,7 +89,6 @@ function sortInvestorSummaries(summaries: InvestorSummary[]) {
 }
 
 export default function TallymarkDemoClient() {
-    const router = useRouter();
     const searchParams = useSearchParams();
     const pollingRef = useRef<number | null>(null);
     const initialFundIdRef = useRef(searchParams.get("fundId"));
@@ -243,7 +242,7 @@ export default function TallymarkDemoClient() {
             setInvestorSummaries(sortInvestorSummaries(nextInvestorSummaries));
 
             if (initialFundIdRef.current) {
-                await handleSelectFund(initialFundIdRef.current);
+                await handleSelectFund(initialFundIdRef.current, { syncUrl: false });
             }
         } catch (err) {
             setError(
@@ -309,9 +308,15 @@ export default function TallymarkDemoClient() {
         else params.delete("issueId");
         params.set("view", view);
 
-        router.replace(`/demos/node/tallymark?${params.toString()}`, {
-            scroll: false,
-        });
+        const nextUrl = `/demos/node/tallymark?${params.toString()}`;
+        if (
+            typeof window !== "undefined" &&
+            `${window.location.pathname}${window.location.search}` === nextUrl
+        ) {
+            return;
+        }
+
+        window.history.replaceState(null, "", nextUrl);
     }
 
     async function runAction<T>(
@@ -331,7 +336,10 @@ export default function TallymarkDemoClient() {
         }
     }
 
-    async function handleSelectFund(fundId: string) {
+    async function handleSelectFund(
+        fundId: string,
+        options: { syncUrl?: boolean } = {},
+    ) {
         setSelectedInvestorId(null);
         setLoading((current) => ({
             ...current,
@@ -380,7 +388,9 @@ export default function TallymarkDemoClient() {
             setIssueTransactionTypeFilter("all");
             setActionSuccess(null);
             setActiveView("overview");
-            syncUrl({ fundId, runId: null, issueId: null, view: "overview" });
+            if (options.syncUrl !== false) {
+                syncUrl({ fundId, runId: null, issueId: null, view: "overview" });
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to load fund.");
         } finally {
@@ -396,7 +406,7 @@ export default function TallymarkDemoClient() {
     }
 
     async function handleSelectInvestorSummary(summary: InvestorSummary) {
-        await handleSelectFund(summary.fundId);
+        await handleSelectFund(summary.fundId, { syncUrl: false });
         setSelectedInvestorId(summary.id);
         setIssueInvestorFilter(summary.id);
         setDashboardTab("funds");
