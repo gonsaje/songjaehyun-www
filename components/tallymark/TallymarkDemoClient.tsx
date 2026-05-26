@@ -270,8 +270,6 @@ export default function TallymarkDemoClient() {
 
         setFunds(summaries);
         setSelectedBatchFundIds((current) => {
-            if (current.length === 0) return summaries.map((summary) => summary.id);
-
             const summaryIds = new Set(summaries.map((summary) => summary.id));
             return current.filter((fundId) => summaryIds.has(fundId));
         });
@@ -421,9 +419,14 @@ export default function TallymarkDemoClient() {
     }
 
     function handleToggleAllBatchFunds() {
-        setSelectedBatchFundIds((current) =>
-            current.length === funds.length ? [] : funds.map((fund) => fund.id),
-        );
+        setSelectedBatchFundIds((current) => {
+            const fundIds = funds.map((fund) => fund.id);
+            const currentFundIds = current.filter((fundId) =>
+                fundIds.includes(fundId),
+            );
+
+            return currentFundIds.length === fundIds.length ? [] : fundIds;
+        });
     }
 
     async function handleViewChange(view: WorkspaceView) {
