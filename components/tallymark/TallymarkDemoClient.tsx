@@ -96,7 +96,6 @@ export default function TallymarkDemoClient() {
     const didBootstrapRef = useRef(false);
 
     const [funds, setFunds] = useState<Fund[]>([]);
-    const [selectedBatchFundIds, setSelectedBatchFundIds] = useState<string[]>([]);
     const [fundSummaries, setFundSummaries] = useState<
         Record<string, TallymarkFundSummary>
     >({});
@@ -240,7 +239,6 @@ export default function TallymarkDemoClient() {
             );
 
             setFunds(summaries);
-            setSelectedBatchFundIds(summaries.map((summary) => summary.id));
             setFundSummaries(nextFundSummaries);
             setInvestorSummaries(sortInvestorSummaries(nextInvestorSummaries));
 
@@ -269,10 +267,6 @@ export default function TallymarkDemoClient() {
         if (!summaries) return;
 
         setFunds(summaries);
-        setSelectedBatchFundIds((current) => {
-            const summaryIds = new Set(summaries.map((summary) => summary.id));
-            return current.filter((fundId) => summaryIds.has(fundId));
-        });
         setFundSummaries(
             summaries.reduce<Record<string, TallymarkFundSummary>>(
                 (accumulator, summary) => {
@@ -410,25 +404,6 @@ export default function TallymarkDemoClient() {
         syncUrl({ fundId: summary.fundId, view: "transactions" });
     }
 
-    function handleToggleBatchFund(fundId: string) {
-        setSelectedBatchFundIds((current) =>
-            current.includes(fundId)
-                ? current.filter((selectedFundId) => selectedFundId !== fundId)
-                : [...current, fundId],
-        );
-    }
-
-    function handleToggleAllBatchFunds() {
-        setSelectedBatchFundIds((current) => {
-            const fundIds = funds.map((fund) => fund.id);
-            const currentFundIds = current.filter((fundId) =>
-                fundIds.includes(fundId),
-            );
-
-            return currentFundIds.length === fundIds.length ? [] : fundIds;
-        });
-    }
-
     async function handleViewChange(view: WorkspaceView) {
         if (view === "investors" && selectedFundId && investors.length === 0) {
             const data = await runAction("investors", () =>
@@ -517,10 +492,10 @@ export default function TallymarkDemoClient() {
     }
 
     async function handleStartBatchReconciliation() {
-        const fundIds = selectedBatchFundIds;
+        const fundIds = funds.map((fund) => fund.id);
 
         if (fundIds.length === 0) {
-            setError("Select at least one fund before running batch reconciliation.");
+            setError("No funds are available for batch reconciliation.");
             return;
         }
 
@@ -848,7 +823,6 @@ export default function TallymarkDemoClient() {
                     selectedFund={selectedFund}
                     loading={loading}
                     fundCount={funds.length}
-                    selectedBatchFundCount={selectedBatchFundIds.length}
                     onRunAll={handleStartBatchReconciliation}
                 />
 
@@ -870,12 +844,9 @@ export default function TallymarkDemoClient() {
                                     funds={funds}
                                     fundSummaries={fundSummaries}
                                     selectedFundId={selectedFundId}
-                                    selectedBatchFundIds={selectedBatchFundIds}
                                     loading={loading.funds}
                                     healthSnapshot={healthSnapshot}
                                     onSelectFund={handleSelectFund}
-                                    onToggleBatchFund={handleToggleBatchFund}
-                                    onToggleAllBatchFunds={handleToggleAllBatchFunds}
                                 />
                             }
                             investors={
