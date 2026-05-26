@@ -66,6 +66,39 @@ export default function TallymarkDocsPage() {
 		"Issue events",
 	];
 
+	const technicalApproach = [
+		{
+			title: "TypeScript / Next.js",
+			description:
+				"Used for the operations console, typed API integration, and stateful review workflows across funds, investors, runs, transactions, and issues.",
+		},
+		{
+			title: "Node / Fastify",
+			description:
+				"Provides a lightweight backend API layer for fund summaries, reconciliation runs, review queues, corrective actions, and issue events.",
+		},
+		{
+			title: "Postgres / Supabase",
+			description:
+				"Fits the relational shape of fund operations data: funds own investors, transactions, runs, review issues, and audit records.",
+		},
+		{
+			title: "Trigger.dev",
+			description:
+				"Supports the direction for async reconciliation work, scheduled runs, batch runs, retries, and longer-running review jobs.",
+		},
+		{
+			title: "OpenAI API",
+			description:
+				"Used as a constrained summary layer for operator context. Deterministic checks find issues; AI helps explain what to review.",
+		},
+		{
+			title: "Human-in-the-loop design",
+			description:
+				"Operators make the resolution decision, apply data fixes, add notes, and preserve an audit trail for each action.",
+		},
+	];
+
 	const flow = [
 		{
 			step: "01",
@@ -99,6 +132,27 @@ export default function TallymarkDocsPage() {
 		},
 	];
 
+	const runModes = [
+		{
+			title: "Single fund run",
+			description:
+				"Start reconciliation for the selected fund, poll the created run, then refresh issues when the run completes.",
+			endpoint: "POST /api/tallymark/funds/:fundId/reconciliation-runs",
+		},
+		{
+			title: "Scheduled run",
+			description:
+				"Queue reconciliation for a fund at a future ISO timestamp so review work can be prepared around expected data arrivals.",
+			endpoint: "POST /api/tallymark/funds/:fundId/reconciliation-runs/schedule",
+		},
+		{
+			title: "Batch run",
+			description:
+				"Kick off reconciliation across multiple funds from the dashboard when the operator wants to refresh the full review queue.",
+			endpoint: "POST /api/tallymark/reconciliation-runs/batch",
+		},
+	];
+
 	const endpoints = [
 		{
 			group: "Dashboard summaries",
@@ -112,6 +166,9 @@ export default function TallymarkDocsPage() {
 			group: "Reconciliation runs",
 			items: [
 				"POST /api/tallymark/funds/:fundId/reconciliation-runs",
+				"POST /api/tallymark/reconciliation-runs/batch",
+				"POST /api/tallymark/funds/:fundId/reconciliation-runs/schedule",
+				"PATCH /api/tallymark/reconciliation-runs/:reconciliationRunId/cancel",
 				"GET /api/tallymark/reconciliation-runs/:reconciliationRunId",
 				"GET /api/tallymark/funds/:fundId/reconciliation-runs",
 			],
@@ -214,6 +271,32 @@ export default function TallymarkDocsPage() {
 					</div>
 				</div>
 
+				<section className="mt-8 rounded-3xl border border-brand-blue/15 bg-white/60 p-6 shadow-[0_18px_60px_rgba(44,78,115,0.07)]">
+					<h2 className="text-xl font-semibold text-slate-950">Technical approach</h2>
+					<div className="mt-3 grid gap-5 lg:grid-cols-2">
+						<p className="text-sm leading-6 text-slate-600">
+							Tallymark is built as a full-stack workflow demo using TypeScript, Next.js, React, Node/Fastify, Postgres/Supabase, Trigger.dev, TailwindCSS, and the OpenAI API. The stack mirrors a high-ownership product environment: typed contracts between frontend and backend, a relational model for fund operations data, background orchestration for reconciliation runs, and a constrained AI layer for review context.
+						</p>
+						<p className="text-sm leading-6 text-slate-600">
+							The demo is intentionally not a generic data browser. The frontend starts from risk summaries, lets the reviewer run reconciliation, opens issue-specific work queues, applies corrective actions to the underlying transaction data, and refreshes the audit trail so the resolution is visible.
+						</p>
+					</div>
+
+					<div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+						{technicalApproach.map((item) => (
+							<div
+								key={item.title}
+								className="rounded-2xl border border-brand-blue/15 bg-white/70 p-4"
+							>
+								<h3 className="font-semibold text-slate-950">{item.title}</h3>
+								<p className="mt-2 text-sm leading-6 text-slate-600">
+									{item.description}
+								</p>
+							</div>
+						))}
+					</div>
+				</section>
+
 				<div className="mt-8 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
 					<section className="rounded-3xl border border-brand-blue/15 bg-white/60 p-6 shadow-[0_18px_60px_rgba(44,78,115,0.07)]">
 						<h2 className="text-xl font-semibold text-slate-950">Baseline problem</h2>
@@ -270,6 +353,30 @@ export default function TallymarkDocsPage() {
 								<p className="mt-2 text-sm leading-6 text-slate-600">
 									{item.description}
 								</p>
+							</div>
+						))}
+					</div>
+				</section>
+
+				<section className="mt-8 rounded-3xl border border-brand-blue/15 bg-white/60 p-6 shadow-[0_18px_60px_rgba(44,78,115,0.07)]">
+					<h2 className="text-xl font-semibold text-slate-950">Run orchestration</h2>
+					<p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
+						Operators can run reconciliation immediately for one fund, schedule it for later, or run it across the full fund set from the dashboard.
+					</p>
+
+					<div className="mt-6 grid gap-4 lg:grid-cols-3">
+						{runModes.map((mode) => (
+							<div
+								key={mode.title}
+								className="rounded-2xl border border-brand-blue/15 bg-white/70 p-4"
+							>
+								<h3 className="font-semibold text-slate-950">{mode.title}</h3>
+								<p className="mt-2 text-sm leading-6 text-slate-600">
+									{mode.description}
+								</p>
+								<code className="mt-4 block overflow-x-auto rounded-xl border border-brand-blue/15 bg-brand-blue/5 px-3 py-2 text-xs text-brand-blue">
+									{mode.endpoint}
+								</code>
 							</div>
 						))}
 					</div>
