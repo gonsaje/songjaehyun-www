@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Image from "next/image";
 
 export default function Contact() {
   return (
@@ -10,7 +10,7 @@ export default function Contact() {
         </h2>
 
         <p className="mt-4 max-w-xl text-gray-600 leading-relaxed">
-          If you'd like to see more of my work or connect professionally,
+          If you&apos;d like to see more of my work or connect professionally,
           you can find me through the following channels.
         </p>
 
@@ -19,13 +19,16 @@ export default function Contact() {
           <a
             href="https://github.com/gonsaje"
             target="_blank"
+            rel="noreferrer"
             className="group flex items-center justify-between rounded-xl border border-gray-200 px-5 py-4 hover:border-gray-300 transition"
           >
             <span className="font-medium">GitHub</span>
 
-            <img
+            <Image
               src="/github.svg"
               alt=""
+              width={16}
+              height={16}
               className="w-4 h-4 opacity-70 transition-transform group-hover:translate-x-1"
             />
           </a>
@@ -33,13 +36,16 @@ export default function Contact() {
           <a
             href="https://www.linkedin.com/in/jaesong2/"
             target="_blank"
+            rel="noreferrer"
             className="group flex items-center justify-between rounded-xl border border-gray-200 px-5 py-4 hover:border-gray-300 transition"
           >
             <span className="font-medium">LinkedIn</span>
 
-            <img
+            <Image
               src="/linkedin.svg"
               alt=""
+              width={16}
+              height={16}
               className="w-4 h-4 opacity-70 transition-transform group-hover:translate-x-1"
             />
           </a>
@@ -50,9 +56,11 @@ export default function Contact() {
           >
             <span className="font-medium">Email</span>
 
-            <img
+            <Image
               src="/envelope.svg"
               alt=""
+              width={16}
+              height={16}
               className="w-4 h-4 opacity-70 transition-transform group-hover:translate-x-1"
             />
           </a>
@@ -60,13 +68,16 @@ export default function Contact() {
           <a
             href="/JaeHyunSongResume.pdf"
             target="_blank"
+            rel="noreferrer"
             className="group flex items-center justify-between rounded-xl border border-gray-200 px-5 py-4 hover:border-gray-300 transition"
           >
             <span className="font-medium">Resume</span>
 
-            <img
+            <Image
               src="/file-earmark-binary.svg"
               alt=""
+              width={16}
+              height={16}
               className="w-4 h-4 opacity-70 transition-transform group-hover:translate-x-1"
             />
           </a>

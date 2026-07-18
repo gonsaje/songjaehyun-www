@@ -15,9 +15,9 @@ export default function HomeBanner() {
         </h1>
 
         <p className="mt-6 max-w-3xl text-lg leading-8 text-gray-600">
-          This portfolio brings together interactive backend demos,
-          production-style APIs, and architecture work designed to show how I
-          build across the stack.
+          I build client products, SaaS platforms, and enterprise systems from
+          backend architecture through cloud delivery. This portfolio is a focused
+          record of the products, platforms, and client work I have shipped.
         </p>
 
         <p className="mt-4 text-sm text-gray-500">
@@ -26,17 +26,17 @@ export default function HomeBanner() {
 
         <div className="mt-10 flex flex-wrap gap-4">
           <Link
-            href="/demos"
+            href="/work"
             className="rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
           >
-            View My Work
+            View Client &amp; Product Work
           </Link>
 
           <Link
-            href="/architecture"
+            href="/about"
             className="rounded-xl border border-gray-300 px-5 py-3 text-sm font-medium text-gray-900 transition hover:bg-gray-50"
           >
-            How It’s Built
+            About My Background
           </Link>
         </div>
       </div>

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function TechCarousel() {
   const tech = [
     "react",
@@ -17,10 +19,12 @@ export default function TechCarousel() {
       <div className="tech-fade-mask">
         <div className="tech-marquee flex w-max items-center gap-24">
           {loopedTech.map((t, index) => (
-            <img
+            <Image
               key={`${t}-${index}`}
               src={`/logos/${t}.svg`}
               alt={t}
+              width={96}
+              height={80}
               className="h-20 w-auto shrink-0 opacity-60 grayscale transition duration-300 hover:-rotate-6 hover:opacity-100 hover:grayscale-0"
             />
           ))}

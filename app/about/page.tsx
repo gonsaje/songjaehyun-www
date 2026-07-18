@@ -28,6 +28,21 @@ export default function AboutPage() {
           and full-stack implementation. I enjoy building systems where
           correctness, performance, and developer clarity matter.
         </p>
+
+        <p className="mt-4 max-w-3xl text-lg leading-8 text-gray-600">
+          Through{" "}
+          <a
+            href="https://dontsweat.tech/"
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-gray-900 underline decoration-gray-300 underline-offset-4"
+          >
+            DontSweat.Tech
+          </a>
+          , I also design and deliver client and product work including Vye
+          Coconut Water, Farero, and Jumun—moving between product decisions,
+          application code, infrastructure, and launch operations as needed.
+        </p>
       </section>
 
 
@@ -79,7 +94,37 @@ export default function AboutPage() {
           Experience
         </p>
 
-        <div className="mt-6 rounded-3xl border border-gray-200 p-10">
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+
+          <div className="rounded-3xl border border-gray-200 p-10">
+
+          <h2 className="text-2xl font-semibold">
+            Independent Software Engineer
+          </h2>
+
+          <p className="mt-1 text-sm text-gray-500">
+            DontSweat.Tech
+          </p>
+
+          <div className="mt-6 space-y-4 text-gray-600 leading-7">
+            <p>
+              Design and deliver client software across ecommerce, SaaS,
+              wholesale operations, architecture, and cloud infrastructure.
+            </p>
+            <p>
+              Built Vye&apos;s commerce experience and launch infrastructure, while
+              developing Farero&apos;s workforce coordination workflows and Jumun&apos;s
+              independently deployable storefront, admin, and Spring Boot API.
+            </p>
+            <p>
+              Own the path from unclear requirements through implementation,
+              rollout planning, production readiness, and maintainable handoff.
+            </p>
+          </div>
+
+          </div>
+
+          <div className="rounded-3xl border border-gray-200 p-10">
 
           <h2 className="text-2xl font-semibold">
             Software Engineer
@@ -122,6 +167,8 @@ export default function AboutPage() {
               vulnerabilities through safer serialization patterns, stricter
               validation, and hardened runtime configurations.
             </p>
+
+          </div>
 
           </div>
 
@@ -229,15 +276,13 @@ export default function AboutPage() {
         </p>
 
         <p className="mt-4 text-lg leading-8 text-gray-600">
-          I built this portfolio as an interactive engineering platform rather
-          than a static showcase. The demos are backed by real backend services
-          and infrastructure so visitors can explore system behavior, API
-          design, and architecture decisions directly.
+          This portfolio is intentionally static and lightweight. It presents my
+          work without runtime APIs, application accounts, or backend dependencies.
         </p>
 
         <p className="mt-4 text-lg leading-8 text-gray-600">
-          The goal is simple: make my engineering approach visible in running
-          systems, not just descriptions.
+          The goal is simple: make the scope of my engineering work clear and let
+          the products, delivery decisions, and outcomes speak for themselves.
         </p>
 
       </section>

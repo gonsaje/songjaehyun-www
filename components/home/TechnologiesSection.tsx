@@ -12,8 +12,8 @@ export default function TechnologiesSection() {
           Built across the stack
         </h2>
         <p className="mt-4 text-base leading-7 text-gray-600">
-          The frontend, backend services, and infrastructure used to design,
-          implement, and deploy this platform.
+          The languages, frameworks, data systems, and infrastructure I use to
+          design and deliver production software.
         </p>
       </div>
 

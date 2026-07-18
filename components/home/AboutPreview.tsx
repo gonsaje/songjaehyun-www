@@ -10,14 +10,14 @@ export default function AboutPreview() {
         </p>
 
         <h2 className="mt-3 text-3xl font-semibold tracking-tight text-gray-950">
-          Backend-focused. Product-aware.
+          Systems-minded. Product-aware.
         </h2>
 
         <p className="mt-5 text-base leading-8 text-gray-600">
-          I'm a software engineer focused on backend systems, API design,
-          and building technical demos that make engineering ideas tangible.
-          This portfolio showcases how I approach system architecture,
-          implementation, and frontend presentation as a cohesive product.
+          I&apos;m a software engineer focused on backend systems, product architecture,
+          and reliable delivery. Through DontSweat.Tech, I work across client
+          launches and products including Vye, Farero, and Jumun, alongside years
+          of enterprise platform, AEM, accessibility, and cloud migration work.
         </p>
 
         <div className="mt-6">
